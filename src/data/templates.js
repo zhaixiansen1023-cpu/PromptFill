@@ -2113,14 +2113,14 @@ export const TEMPLATE_IMPORTED_MMRQ1ZN6 = {
 };
 
 export const TEMPLATE_IMPORTED_MMSZANDO = {
-  cn: `{{drink_product}}的专业照片。在{{drink_background}}上。{{drink_product}}{{drink_action}}。橙汁在罐周围旋转。罐体上的高光和橙子在背景上的阴影。{{drink_camera_angle}}，使用DSLR 35mm 2.8拍摄`,
-  en: `Professional photo of a {{drink_product}}. On a {{drink_background}}. The {{drink_product}} is {{drink_action}}. The orange juice is swirling around the can. Highlights on the can and oranges shadow on the backdrop. {{drink_camera_angle}} taken with a DSLR 35mm 2.8`
+  cn: `{{drink_product: 芬达软饮料罐}}的专业照片。在{{drink_background: 橙色背景}}上。{{drink_product: 芬达软饮料罐}}{{drink_action: 爆炸，橙子从罐中涌出}}。橙汁在罐周围旋转。罐体上的高光和橙子在背景上的阴影。{{drink_camera_angle: 高角度俯拍橙汁旋转形成的圆弧}}，使用DSLR 35mm 2.8拍摄`,
+  en: `Professional photo of a {{drink_product: Fanta softdrink can}}. On a {{drink_background: orange background}}. The {{drink_product: Fanta softdrink can}} is {{drink_action: exploding with oranges bursting from the can}}. The orange juice is swirling around the can. Highlights on the can and oranges shadow on the backdrop. {{drink_camera_angle: high angle overhead shot capturing the swirling arc of orange juice}} taken with a DSLR 35mm 2.8`
 };
 
 // 护肤品奇幻广告模板
 export const TEMPLATE_SKINCARE_FANTASY_AD = {
-  cn: `超现实奢华护肤品广告照片，倾斜的巨大{{skincare_product}}漂浮在柔软白云上方，瓶身为{{skincare_color}}的玻璃材质，瓶内产品呈新鲜凝结水珠状，瓶身在空中微微倾斜。一位时尚年轻女性面容平静自然，{{fantasy_character_pose}}，身穿{{fantasy_dress_style}}，裙摆随风轻柔飘动。{{fantasy_floating_elements}}在空中漂浮。梦幻奇妙的护肤品广告美学，{{fantasy_sky_background}}背景，玻璃瓶身呈现光泽反射，超写实商业产品摄影，柔和电影级阳光带来清晰高光，使用佳能EOS R5拍摄，50mm f/1.8镜头，{{pastel_color_palette}}调色板`,
-  en: `A surreal luxury skincare advertising photo of a tilted giant {{skincare_product}} floating above soft white clouds, bottle is {{skincare_color}} glass material with fresh condensation droplets inside, the bottle slightly inclined in the air. A fashionable young woman with a calm natural facial expression {{fantasy_character_pose}}, wearing a {{fantasy_dress_style}} that moves gently in the breeze. {{fantasy_floating_elements}} floating around in the sky. Dreamy whimsical skincare campaign aesthetic, {{fantasy_sky_background}} background, glossy reflections on the glass bottle, ultra realistic commercial product photography, soft cinematic sunlight with crisp highlights, shot with a Canon EOS R5, 50mm f/1.8 lens, {{pastel_color_palette}} color palette`
+  cn: `超现实奢华护肤品广告照片，倾斜的巨大{{skincare_product: 精华滴管瓶}}漂浮在柔软白云上方，瓶身为{{skincare_color: 粉桃色}}的玻璃材质，瓶内产品呈新鲜凝结水珠状，瓶身在空中微微倾斜。一位时尚年轻女性面容平静自然，{{fantasy_character_pose: 坐在瓶盖上}}，身穿{{fantasy_dress_style: 优雅飘逸的连衣裙}}，裙摆随风轻柔飘动。{{fantasy_floating_elements: 成熟桃子和桃子切片}}在空中漂浮。梦幻奇妙的护肤品广告美学，{{fantasy_sky_background: 明亮清澈的蓝天}}背景，玻璃瓶身呈现光泽反射，超写实商业产品摄影，柔和电影级阳光带来清晰高光，使用佳能EOS R5拍摄，50mm f/1.8镜头，{{pastel_color_palette: 粉桃色和天蓝色}}调色板`,
+  en: `A surreal luxury skincare advertising photo of a tilted giant {{skincare_product: serum dropper bottle}} floating above soft white clouds, bottle is {{skincare_color: pink-peach colored}} glass material with fresh condensation droplets inside, the bottle slightly inclined in the air. A fashionable young woman with a calm natural facial expression {{fantasy_character_pose: sitting on the bottle cap}}, wearing a {{fantasy_dress_style: elegant flowing dress}} that moves gently in the breeze. {{fantasy_floating_elements: ripe peaches and peach slices}} floating around in the sky. Dreamy whimsical skincare campaign aesthetic, {{fantasy_sky_background: bright clear blue sky}} background, glossy reflections on the glass bottle, ultra realistic commercial product photography, soft cinematic sunlight with crisp highlights, shot with a Canon EOS R5, 50mm f/1.8 lens, {{pastel_color_palette: pastel peach and sky blue}} color palette`
 };
 
 export const INITIAL_TEMPLATES_CONFIG = [
@@ -3166,6 +3166,12 @@ export const INITIAL_TEMPLATES_CONFIG = [
         en: "high angle overhead shot capturing the swirling arc of orange juice"
       }
     },
+    localOptions: {
+      drink_product: "芬达软饮料罐",
+      drink_background: "橙色背景",
+      drink_action: "爆炸，橙子从罐中涌出",
+      drink_camera_angle: "高角度俯拍橙汁旋转形成的圆弧"
+    },
     tags: ["产品","摄影"],
     language: ["cn","en"],
     bestModel: "Nano Banana Pro",
@@ -3206,6 +3212,15 @@ export const INITIAL_TEMPLATES_CONFIG = [
         cn: "粉桃色和天蓝色",
         en: "pastel peach and sky blue"
       }
+    },
+    localOptions: {
+      skincare_product: "精华滴管瓶",
+      skincare_color: "粉桃色",
+      fantasy_character_pose: "坐在瓶盖上",
+      fantasy_dress_style: "优雅飘逸的连衣裙",
+      fantasy_floating_elements: "成熟桃子和桃子切片",
+      fantasy_sky_background: "明亮清澈的蓝天",
+      pastel_color_palette: "粉桃色和天蓝色"
     },
     tags: ["产品","创意","奇幻"],
     language: ["cn","en"],

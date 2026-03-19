@@ -24,6 +24,7 @@ import { smartFetch } from './utils/platform'; // 跨平台 fetch
 
 // ====== 导入自定义 Hooks ======
 import { useStickyState, useAsyncStickyState, useEditorHistory, useLinkageGroups, useShareFunctions, useTemplateManagement, useServiceWorker } from './hooks';
+import { computeLocalOptionsFromContent } from './hooks/useLinkageGroups';
 import { useRootContext } from './context/RootContext';
 
 // ====== 导入 UI 组件 ======
@@ -371,62 +372,72 @@ const App = () => {
     static: "/data" // Vercel/本地 静态目录 (同步 Git)
   };
 
-  useEffect(() => {
-    const syncData = async () => {
-      try {
-        console.log("[Sync] 正在检查数据更新...");
-        
-        // 1. 并行获取各源版本号
-        const results = await Promise.allSettled([
-          smartFetch(`${DATA_SOURCES.cloud}/version.json?t=${Date.now()}`).then(r => r.json()),
-          smartFetch(`${DATA_SOURCES.static}/version.json?t=${Date.now()}`).then(r => r.json())
+  // 语义化版本比较：compareVersion("1.0.10", "1.0.9") > 0
+  const compareVersion = (a, b) => {
+    const pa = String(a).split('.').map(Number);
+    const pb = String(b).split('.').map(Number);
+    const len = Math.max(pa.length, pb.length);
+    for (let i = 0; i < len; i++) {
+      const diff = (pa[i] || 0) - (pb[i] || 0);
+      if (diff !== 0) return diff;
+    }
+    return 0;
+  };
+
+  // 从后端拉取最新系统数据并应用，返回是否成功拉取了新数据
+  const fetchAndApplyRemoteData = React.useCallback(async (currentVersion) => {
+    try {
+      console.log("[Sync] 正在检查数据更新...");
+
+      const results = await Promise.allSettled([
+        smartFetch(`${DATA_SOURCES.cloud}/version.json?t=${Date.now()}`).then(r => r.json()),
+        smartFetch(`${DATA_SOURCES.static}/version.json?t=${Date.now()}`).then(r => r.json())
+      ]);
+
+      let bestSource = null;
+      let maxVersion = currentVersion;
+
+      results.forEach((res, index) => {
+        if (res.status === 'fulfilled' && res.value?.dataVersion) {
+          if (compareVersion(res.value.dataVersion, maxVersion) > 0) {
+            maxVersion = res.value.dataVersion;
+            bestSource = index === 0 ? DATA_SOURCES.cloud : DATA_SOURCES.static;
+          }
+        }
+      });
+
+      if (bestSource) {
+        console.log(`[Sync] 发现更新版本 ${maxVersion}，来源: ${bestSource}`);
+        const [tplRes, bankRes] = await Promise.all([
+          smartFetch(`${bestSource}/templates.json`),
+          smartFetch(`${bestSource}/banks.json`)
         ]);
 
-        let bestSource = null;
-        let maxVersion = lastAppliedDataVersion || SYSTEM_DATA_VERSION;
+        if (tplRes.ok && bankRes.ok) {
+          const newTemplates = await tplRes.json();
+          const newBanksData = await bankRes.json();
 
-        // 2. 比对哪个源的版本最新
-        results.forEach((res, index) => {
-          if (res.status === 'fulfilled' && res.value.dataVersion) {
-            // 这里使用简单的字符串比对或版本比对逻辑
-            if (res.value.dataVersion > maxVersion) {
-              maxVersion = res.value.dataVersion;
-              bestSource = index === 0 ? DATA_SOURCES.cloud : DATA_SOURCES.static;
-            }
-          }
-        });
+          setTemplates(newTemplates.config || newTemplates);
+          setBanks(newBanksData.banks);
+          setDefaults(newBanksData.defaults);
+          setCategories(newBanksData.categories);
+          setLastAppliedDataVersion(maxVersion);
 
-        // 3. 如果发现了更新的版本，执行拉取
-        if (bestSource) {
-          console.log(`[Sync] 发现更新版本 ${maxVersion}，来源: ${bestSource}`);
-          const [tplRes, bankRes] = await Promise.all([
-            smartFetch(`${bestSource}/templates.json`),
-            smartFetch(`${bestSource}/banks.json`)
-          ]);
-
-          if (tplRes.ok && bankRes.ok) {
-            const newTemplates = await tplRes.json();
-            const newBanksData = await bankRes.json();
-
-            // 批量更新状态
-            setTemplates(newTemplates.config || newTemplates);
-            setBanks(newBanksData.banks);
-            setDefaults(newBanksData.defaults);
-            setCategories(newBanksData.categories);
-            setLastAppliedDataVersion(maxVersion);
-            
-            console.log("[Sync] 数据同步成功");
-          }
-        } else {
-          console.log("[Sync] 当前数据已是最新");
+          console.log("[Sync] 数据同步成功");
+          return true;
         }
-      } catch (e) {
-        console.warn("[Sync] 同步过程中出现非致命异常:", e.message);
+      } else {
+        console.log("[Sync] 当前数据已是最新");
       }
-    };
+    } catch (e) {
+      console.warn("[Sync] 同步过程中出现非致命异常:", e.message);
+    }
+    return false;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    syncData();
-  }, []);
+  useEffect(() => {
+    fetchAndApplyRemoteData(lastAppliedDataVersion || SYSTEM_DATA_VERSION);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // ================================
 
   // 检查系统模版更新
@@ -608,6 +619,26 @@ const App = () => {
           setCategories(INITIAL_CATEGORIES);
       }
   }, [isCategoriesLoaded]);
+
+  // 编辑模式下 content 变化时，同步更新 localOptions 临时槽
+  const activeContentRef = React.useRef(null);
+  useEffect(() => {
+    if (!activeTemplate) return;
+    const contentStr = typeof activeTemplate.content === 'object'
+      ? (activeTemplate.content.cn || activeTemplate.content.en || '')
+      : (activeTemplate.content || '');
+    // 避免与 useLinkageGroups 的 updateActiveTemplateSelection 重复触发（content 相同则跳过）
+    if (activeContentRef.current === contentStr) return;
+    activeContentRef.current = contentStr;
+
+    const newLocalOptions = computeLocalOptionsFromContent(contentStr, activeTemplate.localOptions, banks);
+    const hasChange = JSON.stringify(newLocalOptions) !== JSON.stringify(activeTemplate.localOptions || {});
+    if (!hasChange) return;
+
+    setTemplates(prev => prev.map(t =>
+      t.id === activeTemplateId ? { ...t, localOptions: newLocalOptions } : t
+    ));
+  }, [activeTemplate?.content, activeTemplateId, banks]);
 
   // Ensure all templates have tags field and sync default templates' tags (migration safety)
   useEffect(() => {
@@ -976,16 +1007,21 @@ const App = () => {
   }, [handleAddCustomAndSelectFromHook]);
 
   // 将模板内容中的 {{变量}} 占位符替换为当前已选的实际值
+  // 支持旧格式 {{key}} 和新格式 {{key: val}}
   // 这样传给 AI 的是"生成一个现代风格的图片"而非"生成一个{{style}}的图片"
   const resolveTemplateVariables = React.useCallback((templateText, template, langKey) => {
-    if (!templateText || !template?.selections) return templateText;
+    if (!templateText) return templateText;
     
-    return templateText.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
-      const trimmedKey = key.trim();
+    return templateText.replace(/\{\{([^}]+)\}\}/g, (match, inner) => {
+      // 解析新格式 {{key: inlineVal}}
+      const colonIdx = inner.indexOf(':');
+      const trimmedKey = colonIdx === -1 ? inner.trim() : inner.slice(0, colonIdx).trim();
+      const inlineVal = colonIdx === -1 ? null : inner.slice(colonIdx + 1).trim();
+
       // 从 selections 中查找（支持 key 或 key-N 格式）
-      const selectionValue = template.selections[trimmedKey] 
-        || template.selections[`${trimmedKey}-0`]
-        || Object.entries(template.selections).find(([k]) => k === trimmedKey || k.startsWith(`${trimmedKey}-`))?.[1];
+      const selectionValue = template?.selections?.[trimmedKey] 
+        || template?.selections?.[`${trimmedKey}-0`]
+        || Object.entries(template?.selections || {}).find(([k]) => k === trimmedKey || k.startsWith(`${trimmedKey}-`))?.[1];
       
       if (selectionValue) {
         if (typeof selectionValue === 'object' && selectionValue !== null) {
@@ -993,7 +1029,9 @@ const App = () => {
         }
         return String(selectionValue);
       }
-      // 兜底1：从 defaults 中获取
+      // 兜底1：内联值（新格式）
+      if (inlineVal) return inlineVal;
+      // 兜底2：从 defaults 中获取
       const defaultValue = defaults[trimmedKey];
       if (defaultValue) {
         if (typeof defaultValue === 'object' && defaultValue !== null) {
@@ -1001,7 +1039,7 @@ const App = () => {
         }
         return String(defaultValue);
       }
-      // 兜底2：从 banks 的第一个 option 取值（确保 AI 收到的是自然语言而非占位符）
+      // 兜底3：从 banks 的第一个 option 取值（确保 AI 收到的是自然语言而非占位符）
       const bank = banks[trimmedKey];
       if (bank?.options?.length > 0) {
         const firstOpt = bank.options[0];
@@ -1856,15 +1894,18 @@ The background is {{background_color::pink and burgundy}}. The profile name is {
   // --- Template Actions ---
 
   // 刷新系统模板与词库，保留用户数据
-  const handleRefreshSystemData = React.useCallback(() => {
+  // 先尝试从后端拉取最新数据，再做本地 merge
+  const handleRefreshSystemData = React.useCallback(async () => {
     const backupSuffix = t('refreshed_backup_suffix') || '';
-    
-    // 迁移旧格式的 selections：将字符串值转换为对象格式
+
+    // 1. 先尝试拉取远端最新数据（静默，失败不影响后续 merge）
+    await fetchAndApplyRemoteData(lastAppliedDataVersion || SYSTEM_DATA_VERSION);
+
+    // 2. 迁移旧格式的 selections：将字符串值转换为对象格式
     const migratedTemplates = templates.map(tpl => {
       const newSelections = {};
       Object.entries(tpl.selections || {}).forEach(([key, value]) => {
         if (typeof value === 'string' && banks[key.split('-')[0]]) {
-          // 查找对应的词库选项
           const bankKey = key.split('-')[0];
           const bank = banks[bankKey];
           if (bank && bank.options) {
@@ -1889,13 +1930,11 @@ The background is {{background_color::pink and burgundy}}. The profile name is {
     setTemplates(templateResult.templates);
     setBanks(bankResult.banks);
     setDefaults(bankResult.defaults);
-    // 如果当前模板仍然存在则保持，否则选择最新的模板
     setActiveTemplateId(prev => {
       if (templateResult.templates.some(t => t.id === prev)) return prev;
       return templateResult.templates[templateResult.templates.length - 1]?.id || "tpl_photo_grid";
     });
     
-    // 更新版本号，避免再次提示更新
     setLastAppliedDataVersion(SYSTEM_DATA_VERSION);
 
     const notes = [...templateResult.notes, ...bankResult.notes];
@@ -1904,7 +1943,7 @@ The background is {{background_color::pink and burgundy}}. The profile name is {
     } else {
       setNoticeMessage(t('refresh_done_no_conflict'));
     }
-  }, [banks, defaults, templates, t]);
+  }, [banks, defaults, templates, t, fetchAndApplyRemoteData, lastAppliedDataVersion]);
 
   // 监听来自 RootLayout Sidebar 的操作事件
   useEffect(() => {
@@ -2706,8 +2745,12 @@ The background is {{background_color::pink and burgundy}}. The profile name is {
     let finalString = getLocalized(activeTemplate.content, templateLanguage);
     const counters = {};
 
-    finalString = finalString.replace(/{{(.*?)}}/g, (match, key) => {
-        const fullKey = key.trim();
+    finalString = finalString.replace(/{{(.*?)}}/g, (match, inner) => {
+        // 支持新格式 {{key: inlineVal}}
+        const colonIdx = inner.indexOf(':');
+        const fullKey = colonIdx === -1 ? inner.trim() : inner.slice(0, colonIdx).trim();
+        const inlineVal = colonIdx === -1 ? null : inner.slice(colonIdx + 1).trim();
+
         const parsed = parseVariableName(fullKey);
         const baseKey = parsed.baseKey;
         
@@ -2716,9 +2759,9 @@ The background is {{background_color::pink and burgundy}}. The profile name is {
         counters[fullKey] = idx + 1;
 
         const uniqueKey = `${fullKey}-${idx}`;
-        // Prioritize selection, then default (use baseKey for defaults), and get localized value
-        const value = activeTemplate.selections[uniqueKey] || defaults[baseKey];
-        return getLocalized(value, templateLanguage) || match;
+        // 优先级：selections > 内联值 > defaults
+        const value = activeTemplate.selections[uniqueKey] || inlineVal || defaults[baseKey];
+        return getLocalized(value, templateLanguage) || (inlineVal ?? match);
     });
 
     let cleanText = finalString

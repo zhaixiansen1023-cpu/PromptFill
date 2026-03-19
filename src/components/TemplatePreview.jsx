@@ -170,11 +170,26 @@ export const TemplatePreview = React.memo(({
     return { baseKey: varName, groupId: null };
   };
 
+  // 解析 {{A: val}} 或 {{A}} 语法
+  const parseInlineSyntax = (raw) => {
+    const colonIdx = raw.indexOf(':');
+    if (colonIdx === -1) return { varPart: raw.trim(), inlineVal: null };
+    return {
+      varPart: raw.slice(0, colonIdx).trim(),
+      inlineVal: raw.slice(colonIdx + 1).trim() || null,
+    };
+  };
+
+  // 组件顶层派生 localOptions，供 parseLineWithVariables 直接访问（闭包）
+  const localOptions = activeTemplate.localOptions || {};
+
   const parseLineWithVariables = (text, lineKeyPrefix, counters, fullContext = "") => {
     const parts = text.split(/({{[^}]+}})/g);
     return parts.map((part, idx) => {
       if (part.startsWith('{{') && part.endsWith('}}')) {
-        const fullKey = part.slice(2, -2).trim();
+        const rawInner = part.slice(2, -2);
+        const { varPart: fullKey, inlineVal } = parseInlineSyntax(rawInner);
+
         const parsed = parseVariableName(fullKey);
         const baseKey = parsed.baseKey;
         
@@ -183,49 +198,45 @@ export const TemplatePreview = React.memo(({
         counters[fullKey] = varIndex + 1;
         
         const uniqueKey = `${fullKey}-${varIndex}`;
-        // 获取值：优先从 selections 中获取，否则从 defaults 中获取（使用 baseKey）
+
+        // 当前值优先级：selections > 内联值 > defaults
         let currentValue = activeTemplate.selections[uniqueKey];
         
-        // 如果存储的值是字符串且等于变量名（如 "fruit_1"），说明是错误存储，使用默认值
+        // 如果存储的值是字符串且等于变量名（错误存储），跳过
         if (typeof currentValue === 'string' && currentValue === fullKey) {
-          currentValue = defaults[baseKey];
-        } else if (!currentValue) {
-          // 如果没有选择值，使用默认值
-          currentValue = defaults[baseKey];
+          currentValue = null;
+        }
+
+        if (!currentValue) {
+          // 有内联值则用内联值，否则 fallback 到 defaults
+          currentValue = inlineVal ? inlineVal : defaults[baseKey];
         }
         
-        // 如果 currentValue 是字符串且包含变量名后缀（如 "柠檬_1"），需要清理
-        // 这种情况不应该发生，但为了安全起见，我们检查一下
+        // 清理带 groupId 后缀的错误值
         if (typeof currentValue === 'string' && currentValue.endsWith(`_${parsed.groupId}`) && parsed.groupId) {
-          // 如果值以 groupId 结尾，可能是错误拼接，尝试从词库中查找正确的值
           const bank = banks[baseKey];
           if (bank && bank.options) {
-            // 尝试找到匹配的选项（去掉后缀后匹配）
             const valueWithoutSuffix = currentValue.replace(`_${parsed.groupId}`, '');
             const matchedOption = bank.options.find(opt => {
               const optStr = typeof opt === 'string' ? opt : (opt[language] || opt.cn || opt.en || '');
               return optStr === valueWithoutSuffix;
             });
-            if (matchedOption) {
-              currentValue = matchedOption;
-            }
+            if (matchedOption) currentValue = matchedOption;
           }
         }
 
-        // 获取词库配置：使用 baseKey 查找，确保即使变量名是 fruit_1 也能找到 fruit 词库
-        // 例如：fruit_1 -> baseKey: "fruit" -> banks["fruit"]
+        // 获取词库配置；若不在词库中但有内联值或临时词条，则用合成 config 以便正常显示和选择
         const bankConfig = banks[baseKey];
-        
-        // 如果找不到词库，尝试使用 fullKey 作为后备（向后兼容）
-        // 但这种情况不应该发生，因为所有词库都应该使用 baseKey
-        const config = bankConfig || banks[fullKey];
-        
-        // 调试：如果找不到词库，输出警告（开发环境）
+        let config = bankConfig || banks[fullKey];
+        const tempVal = localOptions[baseKey];
+        const temporaryInlineVals = tempVal ? [tempVal] : [];
+        if (!config && (inlineVal || temporaryInlineVals.length > 0)) {
+          config = { category: 'other', label: baseKey, options: [] };
+        }
+
         if (!config && process.env.NODE_ENV === 'development') {
           console.warn(`[Variable] 找不到词库配置: baseKey="${baseKey}", fullKey="${fullKey}", available keys:`, Object.keys(banks).slice(0, 10));
         }
-        
-        // 确保 config 存在且包含 category，否则使用默认值
         if (config && !config.category) {
           console.warn(`[Variable] 词库配置缺少 category: baseKey="${baseKey}", config:`, config);
         }
@@ -235,8 +246,10 @@ export const TemplatePreview = React.memo(({
             key={`${lineKeyPrefix}-${idx}`}
             id={fullKey}
             index={varIndex}
-            config={config}  // 使用 baseKey 获取的词库配置，确保颜色正确
+            config={config}
             currentVal={currentValue}
+            inlineDefault={inlineVal}
+            temporaryInlineVals={temporaryInlineVals}
             isOpen={activePopover === uniqueKey}
             onToggle={(e) => {
               e.stopPropagation();
@@ -249,9 +262,9 @@ export const TemplatePreview = React.memo(({
             t={t}
             language={language}
             isDarkMode={isDarkMode}
-            groupId={parsed.groupId}  // 传递 groupId 用于显示分组标识
-            onGenerateAITerms={onGenerateAITerms}  // 传递 AI 生成回调
-            templateContext={fullContext} // 传递全文内容
+            groupId={parsed.groupId}
+            onGenerateAITerms={onGenerateAITerms}
+            templateContext={fullContext}
           />
         );
       }
@@ -275,6 +288,8 @@ export const TemplatePreview = React.memo(({
       console.error('TemplatePreview: content is not a string:', contentToRender);
       return null;
     }
+
+    // 临时词条直接从模版的 localOptions 字段读取（由编辑/选词时自动维护，组件顶层已派生）
 
     const lines = contentToRender.split('\n');
     const counters = {}; 

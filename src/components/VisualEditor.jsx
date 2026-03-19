@@ -44,30 +44,40 @@ export const VisualEditor = React.forwardRef(({
     return { baseKey: varName, groupId: null };
   };
 
+  // 解析 {{A: val}} 或 {{A}} 语法，返回 { varPart, inlineVal }
+  const parseInlineSyntax = (raw) => {
+    const colonIdx = raw.indexOf(':');
+    if (colonIdx === -1) return { varPart: raw.trim(), inlineVal: null };
+    return {
+      varPart: raw.slice(0, colonIdx).trim(),
+      inlineVal: raw.slice(colonIdx + 1).trim(),
+    };
+  };
+
   const renderHighlights = (text) => {
     if (!text || typeof text !== 'string') return null;
     // Split by {{...}}
     const parts = text.split(/(\{\{[^{}\n]+\}\})/g);
     return parts.map((part, i) => {
       if (part.startsWith('{{') && part.endsWith('}}')) {
-        const fullKey = part.slice(2, -2).trim();
+        const rawInner = part.slice(2, -2);
+        const { varPart, inlineVal } = parseInlineSyntax(rawInner);
+
         // 解析变量名，提取 baseKey（用于查找词库）
-        const parsed = parseVariableName(fullKey);
+        const parsed = parseVariableName(varPart);
         const baseKey = parsed.baseKey;
         
-        // 使用 baseKey 查找词库，确保即使变量名是 fruit_1 也能找到 fruit 词库
-        const bank = banks[baseKey] || banks[fullKey]; // 后备：如果 baseKey 找不到，尝试 fullKey
+        // 使用 baseKey 查找词库
+        const bank = banks[baseKey] || banks[varPart];
         const categoryId = bank?.category || 'other';
         const colorKey = categories[categoryId]?.color || 'slate';
         const style = CATEGORY_STYLES[colorKey];
         
-        // Style needs to match font metrics exactly, so avoid padding/border that adds width
+        // 仅用背景色+文字色高亮，不改变字重/圆角，否则与 textarea 字宽不一致导致光标错位
+        const bgClass = isDarkMode ? `${style.bg}/20 ${style.text}` : `${style.bg} ${style.text}`;
+
         return (
-          <span 
-            key={i} 
-            data-export-pill="true"
-            className={`${isDarkMode ? (style.bg.replace('bg-', 'bg-') + '/20 ' + style.text.replace('text-', 'text-')) : (style.bg + ' ' + style.text)} font-bold rounded-sm`}
-          >
+          <span key={i} data-export-pill="true" className={bgClass}>
             {part}
           </span>
         );

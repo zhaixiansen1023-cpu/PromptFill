@@ -21,6 +21,8 @@ export const Variable = ({
   index,
   config,
   currentVal,
+  inlineDefault = null,        // 当前位置的内联值（来自 {{A: val}} 语法）
+  temporaryInlineVals = [],    // 本模版下该变量所有临时词条（不在词库中），跨位置收集
   isOpen,
   onToggle,
   onSelect,
@@ -400,6 +402,34 @@ export const Variable = ({
           {/* 本地词库部分 */}
           <div className="flex flex-col mt-2">
             <div className="px-2 space-y-1 pb-3">
+              {/* 临时内联词条（不在词库中，跨位置收集）放最前面 */}
+              {temporaryInlineVals.map((val, tIdx) => (
+                <button
+                  key={`inline-temp-${tIdx}`}
+                  onClick={() => onSelect(val)}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group flex items-center justify-between
+                    ${isSelected(val)
+                      ? (isDarkMode ? 'bg-orange-500/20 shadow-lg font-bold' : 'bg-white shadow-md font-bold')
+                      : (isDarkMode ? 'hover:bg-white/5 text-gray-400 hover:text-white' : 'hover:bg-white/80 text-gray-600 hover:text-gray-900')}`}
+                  style={isSelected(val) ? { color: premium.to } : {}}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{val}</span>
+                    <span
+                      className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${
+                        isDarkMode
+                          ? 'text-orange-400/70 border-orange-500/20 bg-orange-500/10'
+                          : 'text-orange-500/70 border-orange-300/40 bg-orange-50'
+                      }`}
+                      title={language === 'cn' ? '仅在该模版下生效' : 'Only applies to this template'}
+                    >
+                      {language === 'cn' ? '本模版' : 'local'}
+                    </span>
+                  </span>
+                  {isSelected(val) && <Check size={14} />}
+                </button>
+              ))}
+
               {config.options.length > 0 ? config.options.map((opt, idx) => (
                 <button
                   key={`local-${idx}`}
@@ -414,9 +444,11 @@ export const Variable = ({
                   {isSelected(opt) && <Check size={14} />}
                 </button>
               )) : (
-                <div className="px-3 py-8 text-center text-gray-400 text-sm italic">
-                  {t('no_options')}
-                </div>
+                temporaryInlineVals.length === 0 && (
+                  <div className="px-3 py-8 text-center text-gray-400 text-sm italic">
+                    {t('no_options')}
+                  </div>
+                )
               )}
             </div>
           </div>

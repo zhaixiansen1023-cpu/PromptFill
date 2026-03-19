@@ -3,6 +3,23 @@ import { INITIAL_TEMPLATES_CONFIG } from '../data/templates';
 import { INITIAL_BANKS, INITIAL_DEFAULTS } from '../data/banks';
 import { deepClone, makeUniqueKey } from './helpers';
 
+// 将 content 中的内联值剥离，只保留变量骨架用于比较
+// {{A: val}} → {{A}}，{{A}} 保持不变
+const stripInlineValues = (content) => {
+  if (!content) return content;
+  if (typeof content === 'string') {
+    return content.replace(/\{\{([^}:]+):[^}]*\}\}/g, (_, key) => `{{${key.trim()}}}`);
+  }
+  if (typeof content === 'object') {
+    const result = {};
+    Object.keys(content).forEach(lang => {
+      result[lang] = stripInlineValues(content[lang]);
+    });
+    return result;
+  }
+  return content;
+};
+
 // 合并系统模板，系统模板强制更新，用户改动备份
 export const mergeTemplatesWithSystem = (currentTemplates, { backupSuffix }) => {
   const systemMap = new Map(INITIAL_TEMPLATES_CONFIG.map(t => [t.id, deepClone(t)]));
@@ -14,9 +31,9 @@ export const mergeTemplatesWithSystem = (currentTemplates, { backupSuffix }) => 
     if (systemMap.has(t.id)) {
       const sys = systemMap.get(t.id);
       
-      // 比较名称和内容（忽略 selections 等交互状态）
+      // 比较名称和内容骨架（剥离内联值后比较，避免仅因内联值变化触发备份）
       const isDifferent = JSON.stringify(t.name) !== JSON.stringify(sys.name) || 
-                          JSON.stringify(t.content) !== JSON.stringify(sys.content);
+                          JSON.stringify(stripInlineValues(t.content)) !== JSON.stringify(stripInlineValues(sys.content));
       
       // 在 merged 列表中找到对应的系统模板进行状态合并
       const targetInMerged = merged.find(m => m.id === t.id);
