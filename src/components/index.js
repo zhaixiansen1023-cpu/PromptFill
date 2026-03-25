@@ -18,5 +18,5 @@ export { SettingsView } from './SettingsView';
 export { Sidebar } from './Sidebar';
 export { TagSidebar } from './TagSidebar';
 export { Tooltip } from './Tooltip';
-export { DarkModeLamp } from './DarkModeLamp';
+
 export { RootLayout } from './RootLayout';

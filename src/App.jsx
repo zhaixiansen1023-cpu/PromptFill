@@ -28,7 +28,7 @@ import { computeLocalOptionsFromContent } from './hooks/useLinkageGroups';
 import { useRootContext } from './context/RootContext';
 
 // ====== 导入 UI 组件 ======
-import { Variable, VisualEditor, PremiumButton, EditorToolbar, Lightbox, TemplatePreview, TemplateEditor, TemplatesSidebar, BanksSidebar, InsertVariableModal, AddBankModal, DiscoveryView, MobileSettingsView, SettingsView, Sidebar, TagSidebar, DarkModeLamp } from './components';
+import { Variable, VisualEditor, PremiumButton, EditorToolbar, Lightbox, TemplatePreview, TemplateEditor, TemplatesSidebar, BanksSidebar, InsertVariableModal, AddBankModal, DiscoveryView, MobileSettingsView, SettingsView, Sidebar, TagSidebar } from './components';
 import { ImagePreviewModal, SourceAssetModal, AnimatedSlogan, MobileAnimatedSlogan } from './components/preview';
 import { MobileBottomNav } from './components/mobile';
 import { ShareOptionsModal, CopySuccessModal, ImportTokenModal, ShareImportModal, CategoryManagerModal, ConfirmModal, AddTemplateTypeModal, VideoSubTypeModal } from './components/modals';
@@ -377,7 +377,7 @@ const App = () => {
 
   // ====== 智能多源数据同步逻辑 ======
   const DATA_SOURCES = {
-    cloud: "https://data.tanshilong.com/data", // 宝塔后端 (最高优先级)
+    cloud: "", // 禁用云端数据源，强制使用本地静态数据 (templates.js)
     static: "/data" // Vercel/本地 静态目录 (同步 Git)
   };
 
@@ -447,6 +447,30 @@ const App = () => {
   useEffect(() => {
     fetchAndApplyRemoteData(lastAppliedDataVersion || SYSTEM_DATA_VERSION);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // === 新增：支持通过 ?reset=1 强制清空本地缓存，重新从 templates.js 初始化 ===
+  useEffect(() => {
+    if (window.location.search.includes('reset=1')) {
+      console.log('[Reset] 检测到 reset=1，开始强制清空本地缓存...');
+      localStorage.clear();
+      try {
+        indexedDB.deleteDatabase('PromptFillDB');
+      } catch (e) {}
+      
+      // 强制注销域下的 Service Worker，防止静态 JS 文件被强行缓存
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for (let registration of registrations) {
+            registration.unregister();
+            console.log('[Reset] Service Worker 注销成功');
+          }
+        });
+      }
+
+      // 解决完后重定向回不带参数的页面
+      window.location.href = window.location.pathname;
+    }
+  }, []);
   // ================================
 
   // 检查系统模版更新
@@ -2784,6 +2808,34 @@ ${tagsHint ? `\n${tagsHint}` : ''}
     copyToClipboard(cleanText).then((success) => {
       if (success) {
         setCopied(true);
+        
+        // --- 新增：跨标签页/Iframe通信，自动写回主应用 ---
+        try {
+            // 方式 1: LocalStorage (跨标签有效)
+            localStorage.setItem('promptfill_autofill_data', JSON.stringify({
+                prompt: cleanText,
+                type: activeTemplate.type || 'image'
+            }));
+            
+            // 方式 2: BroadcastChannel (最稳定，兼容 iframe)
+            if (typeof BroadcastChannel !== 'undefined') {
+                const bc = new BroadcastChannel('promptfill-channel');
+                bc.postMessage({
+                    type: (activeTemplate.type === 'video') ? 'FILL_VIDEO_PROMPT' : 'FILL_PROMPT',
+                    prompt: cleanText
+                });
+                bc.close();
+            }
+            
+            // 尝试直接关闭当前 PromptFill 标签页
+            // (如果在 iframe 中运行，这会静默失败，不会影响)
+            window.close();
+            
+        } catch (e) {
+            console.error("跨页面通信失败", e);
+        }
+        // ------------------------------------
+
         setIsCopySuccessModalOpen(true);
         setTimeout(() => setCopied(false), 2000);
       }

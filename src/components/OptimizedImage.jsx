@@ -59,6 +59,32 @@ const OptimizedImage = memo(({
     onError?.(new Error('Image load failed'));
   }, [onError]);
 
+  // === 新增：拦截已知不可用的防盗链第三方图床 (例如 imgur.org) ===
+  const isForbiddenHost = src && typeof src === 'string' && src.includes('imgur.org');
+
+  if (hasError || isForbiddenHost) {
+    return (
+      <div 
+        className={`${className} flex items-center justify-center`} 
+        style={{ 
+          ...style, 
+          backgroundColor: isDarkMode ? '#1F2937' : '#F3F4F6',
+          borderRadius: style.borderRadius || '8px',
+          width: style.width || '100%',
+          height: style.height || '100%',
+          minHeight: style.height ? 'auto' : '150px'
+        }}
+        {...props}
+      >
+        <div className="flex flex-col items-center gap-1 opacity-60">
+          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span style={{ fontSize: '11px' }} className="text-gray-400">暂无预览</span>
+        </div>
+      </div>
+    );
+  }
   return (
     <img
       ref={imgRef}

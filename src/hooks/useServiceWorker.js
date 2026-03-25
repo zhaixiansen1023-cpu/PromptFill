@@ -12,6 +12,19 @@ export const useServiceWorker = () => {
 
   // 注册 Service Worker
   useEffect(() => {
+    // === 新增：如果在 iframe 中，禁用 Service Worker 并强制注销已有的 ===
+    const isIframe = window.self !== window.top;
+    if (isIframe && 'serviceWorker' in navigator) {
+      console.log('[SW] 处于 iframe 中，正在清理并禁用 Service Worker...');
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+          console.log('[SW] 已强制注销 Service Worker:', registration.scope);
+        }
+      });
+      return;
+    }
+
     if ('serviceWorker' in navigator) {
       // 检查是否在生产环境或开发环境都启用（根据需要调整）
       const swUrl = '/sw.js';

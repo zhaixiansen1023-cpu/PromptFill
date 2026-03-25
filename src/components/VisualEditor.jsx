@@ -177,8 +177,19 @@ function getCursorPixelPosition() {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
   const range = sel.getRangeAt(0).cloneRange();
-  range.collapse(true);
-  const rect = range.getBoundingClientRect();
+
+  // Create a temporary span to get the exact coordinates reliably in all browsers
+  const span = document.createElement('span');
+  // Use zero-width space so it doesn't affect layout
+  span.appendChild(document.createTextNode('\u200b'));
+  range.insertNode(span);
+  const rect = span.getBoundingClientRect();
+  const parent = span.parentNode;
+  parent.removeChild(span);
+  
+  // Normalize node to prevent text node splitting issues
+  parent.normalize();
+
   if (rect.width === 0 && rect.height === 0 && rect.top === 0) return null;
   return { top: rect.bottom + 4, left: rect.left };
 }

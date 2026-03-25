@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   ImageIcon, ArrowUpRight, Search, Plus, Play, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { TitleIcon } from './icons/TitleIcon';
+import { TitleDarkIcon } from './icons/TitleDarkIcon';
 import { getLocalized } from '../utils/helpers';
 import { PremiumButton } from './PremiumButton';
 import { Sidebar } from './Sidebar';
@@ -355,11 +357,11 @@ export const DiscoveryView = React.memo(({
                   <div className="flex flex-col items-center lg:items-start gap-6 w-full">
                       <div className="w-full max-w-[320px] scale-75 sm:scale-85 lg:scale-90 xl:scale-100 origin-center lg:origin-left flex flex-col gap-3">
                           <h1 className="sr-only">提示词填空器 (Prompt Fill) - 专业的 AI 提示词管理与优化工具</h1>
-                          <img
-                              src={isDarkMode ? "/icons/Title_Dark.svg" : "/icons/Title.svg"}
-                              alt="提示词填空器 (Prompt Fill) - 专业的 AI 提示词管理与优化工具"
-                              className="w-full h-auto"
-                          />
+                          {isDarkMode ? (
+                              <TitleDarkIcon className="w-full h-auto" />
+                          ) : (
+                              <TitleIcon className="w-full h-auto" />
+                          )}
                           <p className={`text-xs lg:text-sm font-medium leading-relaxed opacity-80 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             提示词填空器 (Prompt Fill) 是一款专业的 AI 提示词管理工具，支持模版化、变量填充及一键优化。
                           </p>

@@ -14,7 +14,7 @@ const VideoApp = lazy(() => import('./video/VideoApp.jsx'))
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RootProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/promptfill">
         <RootLayout>
           <Routes>
             {/* 视频模块 */}

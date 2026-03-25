@@ -1,4 +1,5 @@
 import React from 'react';
+import { LogoIcon } from './icons/LogoIcon';
 
 const VIDEO_FEATURE_ENABLED = import.meta.env.VITE_VIDEO_ENABLED === 'true';
 import { Link, useLocation } from 'react-router-dom';
@@ -73,7 +74,7 @@ export const Sidebar = ({
       <div className="flex flex-col items-center gap-5 w-full">
         {/* Logo */}
         <div>
-          <img src="/Logo_icon.svg" alt="提示词填空器 (Prompt Fill) - AI 提示词管理工具" className="w-9 h-9" />
+          <LogoIcon className="w-9 h-9" />
         </div>
 
         {/* 导航按钮组 */}

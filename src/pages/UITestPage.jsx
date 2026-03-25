@@ -357,7 +357,6 @@ function CassetteRack({ isDarkMode }) {
             height: '88%',
             flexShrink: 0,
             overflow: 'hidden',
-            transition: 'width 0.32s cubic-bezier(0.4, 0, 0.2, 1)',
             borderRadius: selectedId === item.id ? 8 : 0,
             background: selectedId === item.id
               ? (isDarkMode ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)')

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Sidebar, DarkModeLamp } from './';
+import { Sidebar } from './';
 import { AppFooter } from './AppFooter';
 import { useRootContext } from '../context/RootContext';
 import { isMobile } from '../utils/platform';
@@ -115,7 +115,7 @@ export const RootLayout = ({ children }) => {
         />
       )}
       
-      {!isMobileDevice && <DarkModeLamp isDarkMode={isDarkMode} />}
+
 
       <div className="flex-1 h-full min-w-0 min-h-0 flex flex-col relative z-[1]">
         <div className="flex-1 min-h-0 overflow-hidden">
