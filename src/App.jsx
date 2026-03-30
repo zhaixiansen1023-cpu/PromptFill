@@ -378,7 +378,7 @@ const App = () => {
   // ====== 智能多源数据同步逻辑 ======
   const DATA_SOURCES = {
     cloud: "", // 禁用云端数据源，强制使用本地静态数据 (templates.js)
-    static: "/data" // Vercel/本地 静态目录 (同步 Git)
+    static: "data" // Vercel/本地 静态目录 (同步 Git)
   };
 
   // 语义化版本比较：compareVersion("1.0.10", "1.0.9") > 0
@@ -399,8 +399,8 @@ const App = () => {
       console.log("[Sync] 正在检查数据更新...");
 
       const results = await Promise.allSettled([
-        smartFetch(`${DATA_SOURCES.cloud}/version.json?t=${Date.now()}`).then(r => r.json()),
-        smartFetch(`${DATA_SOURCES.static}/version.json?t=${Date.now()}`).then(r => r.json())
+        smartFetch(getRelativeAssetPath(`${DATA_SOURCES.cloud}/version.json?t=${Date.now()}`)).then(r => r.json()),
+        smartFetch(getRelativeAssetPath(`${DATA_SOURCES.static}/version.json?t=${Date.now()}`)).then(r => r.json())
       ]);
 
       let bestSource = null;
@@ -493,7 +493,7 @@ const App = () => {
   useEffect(() => {
     const checkUpdates = async () => {
       try {
-        const response = await fetch('/version.json?t=' + Date.now());
+        const response = await fetch(getRelativeAssetPath('version.json?t=' + Date.now()));
         if (response.ok) {
           const data = await response.json();
           
@@ -737,6 +737,9 @@ const App = () => {
     
     const url = activeTemplate.imageUrl;
     if (imageBase64Cache.current[url]) return;
+    
+    // 如果是 s3.bmp.ovh 域名，由于 CORS 限制无法直接 fetch，跳过预缓存以避免控制台报错
+    if (url.includes('s3.bmp.ovh')) return;
 
     const preCache = async () => {
         try {
@@ -759,6 +762,19 @@ const App = () => {
     const timer = setTimeout(preCache, 2000);
     return () => clearTimeout(timer);
   }, [activeTemplate?.imageUrl]);
+
+  /** 
+   * 获取相对于应用根路径的资源路径
+   * 适配 Vite base: '/static/promptfill/' 情况
+   */
+  const getRelativeAssetPath = (path) => {
+    // 如果路径已经是 http 开头或者是根路径，则直接返回
+    if (path.startsWith('http')) return path;
+    // 移除路径开头的 / 以便使用相对路径，或者拼接 import.meta.env.BASE_URL
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    return `${baseUrl}${cleanPath}`;
+  };
 
   // 动态更新 SEO 标题和描述
   useEffect(() => {
@@ -4110,7 +4126,7 @@ ${tagsHint ? `\n${tagsHint}` : ''}
           setActiveTemplateId={handleSetActiveTemplateId}
         />
       )}
-      <Analytics />
+      {typeof window !== 'undefined' && window.location.hostname.includes('vercel.app') && <Analytics />}
       <input 
         type="file" 
         ref={fileInputRef} 

@@ -432,6 +432,8 @@ export const MobileSettingsView = ({
     </button>
   );
 
+  const isEmbedded = window.self !== window.top;
+
   return (
     <div className={`flex-1 overflow-y-auto pb-32 relative transition-colors duration-300 ${isDarkMode ? 'bg-[#2A2928]' : 'bg-white'}`}>
       <div className="pt-12 pb-8 px-8">
@@ -441,39 +443,42 @@ export const MobileSettingsView = ({
 
       {/* 1. 系统设置 */}
       <SettingSection title={t('general_settings')} icon={Settings}>
-        <SettingItem 
-          icon={Globe} 
-          label={t('language')} 
-          value={language === 'cn' ? '简体中文' : 'English'} 
-          onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
-        />
-        <div className={`w-full flex items-center justify-between px-5 py-4 transition-all border-b ${
-          isDarkMode ? 'border-white/5' : 'border-gray-100/50'
-        }`}>
-          <div className="flex items-center gap-3">
-            <div className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
-              {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
+        {!isEmbedded && (
+          <>
+            <SettingItem 
+              icon={Globe} 
+              label={t('language')} 
+              value={language === 'cn' ? '简体中文' : 'English'} 
+              onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
+            />
+            <div className={`w-full flex items-center justify-between px-5 py-4 transition-all border-b ${
+              isDarkMode ? 'border-white/5' : 'border-gray-100/50'
+            }`}>
+              <div className="flex items-center gap-3">
+                <div className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
+                  {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
+                </div>
+                <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  {language === 'cn' ? '外观模式' : 'Appearance'}
+                </span>
+              </div>
+              <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} scale-[0.85] origin-right mr-2`}>
+                {[
+                  { id: 'light', label: language === 'cn' ? '亮色' : 'Light' },
+                  { id: 'dark', label: language === 'cn' ? '暗色' : 'Dark' }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    onClick={() => setThemeMode(mode.id)}
+                    className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${themeMode === mode.id ? 'is-active' : ''}`}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <span className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-              {language === 'cn' ? '外观模式' : 'Appearance'}
-            </span>
-          </div>
-          <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} scale-[0.85] origin-right mr-2`}>
-            {[
-              { id: 'light', label: language === 'cn' ? '亮色' : 'Light' },
-              { id: 'dark', label: language === 'cn' ? '暗色' : 'Dark' },
-              { id: 'system', label: language === 'cn' ? '自动' : 'Auto' }
-            ].map(mode => (
-              <button
-                key={mode.id}
-                onClick={() => setThemeMode(mode.id)}
-                className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${themeMode === mode.id ? 'is-active' : ''}`}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </div>
-        </div>
+          </>
+        )}
         <SettingItem 
           icon={Database} 
           label={t('storage_mode')} 

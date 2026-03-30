@@ -633,6 +633,8 @@ export const SettingsView = ({
     </button>
   );
 
+  const isEmbedded = window.self !== window.top;
+
   return (
     <div style={globalContainerStyle} className="flex-1 flex flex-col h-full overflow-hidden relative">
       {/* Header Area - Parallel Titles */}
@@ -664,34 +666,35 @@ export const SettingsView = ({
         {/* Left: Settings Area (35%) */}
         <div className="w-[35%] overflow-y-auto custom-scrollbar pr-10 flex flex-col">
           <div className="flex-1">
-            <SettingSection title={language === 'cn' ? '基础偏好' : 'Preferences'}>
-              <SettingItem 
-                icon={Globe} 
-                label={language === 'cn' ? '界面语言' : 'Language'} 
-                value={language === 'cn' ? 'CN' : 'EN'} 
-                onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
-              />
-              <div className="flex items-center gap-2 p-2.5">
-                <span className={`text-[12px] font-bold tracking-tight shrink-0 ${isDarkMode ? 'text-gray-400' : 'text-gray-800'}`}>
-                  {language === 'cn' ? '外观模式' : 'Appearance'}
-                </span>
-                <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} ml-auto scale-[0.85] origin-right`}>
-                  {[
-                    { id: 'light', label: language === 'cn' ? '亮色' : 'Light' },
-                    { id: 'dark', label: language === 'cn' ? '暗色' : 'Dark' },
-                    { id: 'system', label: language === 'cn' ? '自动' : 'Auto' }
-                  ].map(mode => (
-                    <button
-                      key={mode.id}
-                      onClick={() => setThemeMode(mode.id)}
-                      className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${themeMode === mode.id ? 'is-active' : ''}`}
-                    >
-                      {mode.label}
-                    </button>
-                  ))}
+            {!isEmbedded && (
+              <SettingSection title={language === 'cn' ? '基础偏好' : 'Preferences'}>
+                <SettingItem 
+                  icon={Globe} 
+                  label={language === 'cn' ? '界面语言' : 'Language'} 
+                  value={language === 'cn' ? 'CN' : 'EN'} 
+                  onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
+                />
+                <div className="flex items-center gap-2 p-2.5">
+                  <span className={`text-[12px] font-bold tracking-tight shrink-0 ${isDarkMode ? 'text-gray-400' : 'text-gray-800'}`}>
+                    {language === 'cn' ? '外观模式' : 'Appearance'}
+                  </span>
+                  <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} ml-auto scale-[0.85] origin-right`}>
+                    {[
+                      { id: 'light', label: language === 'cn' ? '亮色' : 'Light' },
+                      { id: 'dark', label: language === 'cn' ? '暗色' : 'Dark' }
+                    ].map(mode => (
+                      <button
+                        key={mode.id}
+                        onClick={() => setThemeMode(mode.id)}
+                        className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${themeMode === mode.id ? 'is-active' : ''}`}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </SettingSection>
+              </SettingSection>
+            )}
 
             <SettingSection title={language === 'cn' ? '数据存储' : 'Storage'}>
               <div className="flex flex-col gap-1">

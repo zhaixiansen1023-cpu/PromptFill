@@ -122,6 +122,7 @@ export const DiscoveryView = React.memo(({
     availableTags,
   }) => {
     const { isTagSidebarVisible } = useRootContext();
+    const isEmbedded = window.self !== window.top;
     const [columnCount, setColumnCount] = useState(1);
     const [columnGap, setColumnGap] = useState(20); // Default to gap-5 (20px)
     const [isMobileTagsExpanded, setIsMobileTagsExpanded] = useState(false); // 手机端顶栏标签行默认折叠
@@ -348,11 +349,11 @@ export const DiscoveryView = React.memo(({
       {/* Poster Content Container */}
       <div 
         style={globalContainerStyle}
-        className="flex-1 flex flex-col overflow-hidden relative z-10 p-4 md:p-5 lg:pt-12 lg:pb-7 lg:px-7"
+        className={`flex-1 flex flex-col overflow-hidden relative z-10 p-4 md:p-5 ${isEmbedded ? 'lg:pt-0' : 'lg:pt-12'} lg:pb-7 lg:px-7`}
       >
           <div className="flex-1 flex flex-col lg:flex-row gap-6 lg:gap-8 xl:gap-12 overflow-hidden pb-4 lg:pb-8 pt-0 px-2 lg:px-6">
               {/* Left Side: Logo & Slogan & Create Button */}
-              <header className="flex flex-col justify-between items-center lg:items-start lg:w-[280px] xl:w-[320px] flex-shrink-0 px-4 lg:pl-6 lg:pr-2 lg:py-6">
+              <header className={`flex flex-col justify-between items-center lg:items-start lg:w-[280px] xl:w-[320px] flex-shrink-0 px-4 lg:pl-6 lg:pr-2 ${isEmbedded ? 'lg:py-2' : 'lg:py-6'}`}>
                   {/* 区块1: Logo + 描述 + Slogan */}
                   <div className="flex flex-col items-center lg:items-start gap-6 w-full">
                       <div className="w-full max-w-[320px] scale-75 sm:scale-85 lg:scale-90 xl:scale-100 origin-center lg:origin-left flex flex-col gap-3">

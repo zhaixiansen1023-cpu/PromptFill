@@ -41,25 +41,21 @@ export const Sidebar = ({
   isDarkMode,
   themeMode,
   setThemeMode,
-  t
+  t,
+  isEmbedded = false
 }) => {
   const location = useLocation();
   // const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
   // 统一的容器样式
-  // TODO: 渐变填充和描边暂时设为透明，保留结构以便后续调整
   const containerStyle = isDarkMode ? {
-    width: '62px',
-    height: '100%',
+    width: isEmbedded ? '100%' : '62px',
+    height: isEmbedded ? '62px' : '100%',
     borderRadius: '16px',
     border: '1px solid transparent',
     background: 'transparent',
-    // 原渐变样式 (暂时禁用)
-    // backgroundImage: 'linear-gradient(180deg, #3B3B3B 0%, #242120 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)',
-    // backgroundOrigin: 'border-box',
-    // backgroundClip: 'padding-box, border-box',
   } : {
-    width: '62px',
-    height: '100%',
+    width: isEmbedded ? '100%' : '62px',
+    height: isEmbedded ? '62px' : '100%',
     borderRadius: '16px',
     border: '1px solid transparent',
     background: 'transparent',
@@ -68,17 +64,19 @@ export const Sidebar = ({
   return (
     <aside 
       style={containerStyle}
-      className="relative flex flex-col justify-between items-center py-1 mr-4 flex-shrink-0"
+      className={`relative flex ${isEmbedded ? 'flex-row items-center px-4 mb-0' : 'flex-col justify-between items-center py-1 mr-4'} flex-shrink-0 transition-all duration-300`}
     >
-      {/* 上部分：Logo + 导航按钮 */}
-      <div className="flex flex-col items-center gap-5 w-full">
-        {/* Logo */}
-        <div>
-          <LogoIcon className="w-9 h-9" />
-        </div>
+      {/* 上部分：Logo (仅非嵌入模式显示) + 导航按钮 */}
+      <div className={`flex ${isEmbedded ? 'flex-row' : 'flex-col'} items-center gap-5 w-full`}>
+        {/* Logo (仅独立模式显示) */}
+        {!isEmbedded && (
+          <div>
+            <LogoIcon className="w-9 h-9" />
+          </div>
+        )}
 
         {/* 导航按钮组 */}
-        <div className="flex flex-col items-center gap-4">
+        <div className={`flex ${isEmbedded ? 'flex-row' : 'flex-col'} items-center gap-4`}>
           <Tooltip content="主页" isDarkMode={isDarkMode}>
             <Link
               to="/explore"
@@ -130,7 +128,7 @@ export const Sidebar = ({
             </Tooltip>
             
             {isSortMenuOpen && (
-              <div className={`absolute left-full ml-4 bottom-0 backdrop-blur-xl rounded-2xl shadow-2xl border py-2 min-w-[160px] z-[110] animate-in slide-in-from-left-2 duration-200 ${isDarkMode ? 'bg-black/80 border-white/10' : 'bg-white/95 border-white/60'}`}>
+              <div className={`absolute ${isEmbedded ? 'top-full mt-2' : 'left-full ml-4 bottom-0'} backdrop-blur-xl rounded-2xl shadow-2xl border py-2 min-w-[160px] z-[110] animate-in slide-in-from-left-2 duration-200 ${isDarkMode ? 'bg-black/80 border-white/10' : 'bg-white/95 border-white/60'}`}>
                 {[
                   { value: 'newest', label: t('sort_newest') },
                   { value: 'oldest', label: t('sort_oldest') },
@@ -165,35 +163,32 @@ export const Sidebar = ({
         </div>
       </div>
 
-      {/* 下部分：设置组 */}
-      <div className="flex flex-col items-center gap-4 w-full">
-        <Tooltip content={t('language')} isDarkMode={isDarkMode}>
-          <button 
-            onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
-            className={`p-2 group transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
-          >
-            <TranslateIcon size={24} />
-          </button>
-        </Tooltip>
+      {/* 下部分：设置组 (嵌入模式下隐藏大部分) */}
+      <div className={`flex ${isEmbedded ? 'flex-row' : 'flex-col'} items-center gap-4 ${isEmbedded ? 'ml-auto' : 'w-full'}`}>
+        {!isEmbedded && (
+          <>
+            <Tooltip content={t('language')} isDarkMode={isDarkMode}>
+              <button 
+                onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
+                className={`p-2 group transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
+              >
+                <TranslateIcon size={24} />
+              </button>
+            </Tooltip>
 
-        <Tooltip content={themeMode === 'system' ? 'Follow System' : (themeMode === 'dark' ? 'Dark Mode' : 'Light Mode')} isDarkMode={isDarkMode}>
-          <button 
-            onClick={() => {
-              if (themeMode === 'light') setThemeMode('dark');
-              else if (themeMode === 'dark') setThemeMode('system');
-              else setThemeMode('light');
-            }}
-            className={`p-2 group relative transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
-          >
-            {themeMode === 'system' ? (
-              <SunMoonIcon size={24} />
-            ) : (themeMode === 'dark' ? <MoonIcon size={24} /> : <SunDimIcon size={24} />)}
-            
-            {themeMode === 'system' && (
-              <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
-            )}
-          </button>
-        </Tooltip>
+            <Tooltip content={themeMode === 'system' ? 'Follow System' : (themeMode === 'dark' ? 'Dark Mode' : 'Light Mode')} isDarkMode={isDarkMode}>
+              <button 
+                onClick={() => {
+                  if (themeMode === 'light') setThemeMode('dark');
+                  else setThemeMode('light'); // 移除 system
+                }}
+                className={`p-2 group relative transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
+              >
+                {themeMode === 'dark' ? <MoonIcon size={24} /> : <SunDimIcon size={24} />}
+              </button>
+            </Tooltip>
+          </>
+        )}
 
         <Tooltip content={t('settings')} isDarkMode={isDarkMode}>
           <Link
@@ -204,23 +199,27 @@ export const Sidebar = ({
           </Link>
         </Tooltip>
 
-        <Tooltip content="App Store" isDarkMode={isDarkMode}>
-          <button
-            onClick={() => openExternalLink('https://apps.apple.com/cn/app/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%A1%AB%E7%A9%BA%E5%99%A8/id6758574801')}
-            className={`p-2 transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
-          >
-            <AppStoreIcon size={24} />
-          </button>
-        </Tooltip>
+        {!isEmbedded && (
+          <>
+            <Tooltip content="App Store" isDarkMode={isDarkMode}>
+              <button
+                onClick={() => openExternalLink('https://apps.apple.com/cn/app/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%A1%AB%E7%A9%BA%E5%99%A8/id6758574801')}
+                className={`p-2 transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
+              >
+                <AppStoreIcon size={24} />
+              </button>
+            </Tooltip>
 
-        <Tooltip content="Github" isDarkMode={isDarkMode}>
-          <button
-            onClick={() => openExternalLink('https://github.com/TanShilongMario/PromptFill/')}
-            className={`p-2 transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
-          >
-            <GithubIcon size={24} />
-          </button>
-        </Tooltip>
+            <Tooltip content="Github" isDarkMode={isDarkMode}>
+              <button
+                onClick={() => openExternalLink('https://github.com/TanShilongMario/PromptFill/')}
+                className={`p-2 transition-colors ${isDarkMode ? 'text-[#8E9196]' : 'text-[#6B7280]'} hover:text-[#F97316]`}
+              >
+                <GithubIcon size={24} />
+              </button>
+            </Tooltip>
+          </>
+        )}
 
         {/* 捐赠按钮 - 暂时隐藏
         <Tooltip content={language === 'cn' ? '请我喝杯奶茶' : 'Buy me a bubble tea'} isDarkMode={isDarkMode}>
