@@ -331,7 +331,42 @@ export const DiscoveryView = React.memo(({
       className="flex-1 flex items-stretch gap-4 overflow-hidden"
     >
       {/* Middle Side: Categories Sidebar (Desktop Only, 受面板显隐控制) */}
-      {isTagSidebarVisible && (
+      {isTagSidebarVisible && (isEmbedded ? (
+        <div className="hidden lg:flex flex-col flex-shrink-0 h-full min-h-0 overflow-hidden" style={{ width: '140px' }}>
+          <Sidebar
+            activeTab="home"
+            isSortMenuOpen={isSortMenuOpen}
+            setIsSortMenuOpen={setIsSortMenuOpen}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            setRandomSeed={setRandomSeed}
+            onRefresh={handleRefreshSystemData}
+            language={language}
+            setLanguage={setLanguage}
+            isDarkMode={isDarkMode}
+            themeMode={themeMode}
+            setThemeMode={setThemeMode}
+            t={t}
+            isEmbedded={true}
+            embeddedInline={true}
+          />
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <TagSidebar
+              TEMPLATE_TAGS={TEMPLATE_TAGS}
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              selectedLibrary={selectedLibrary}
+              selectedType={selectedType}
+              setSelectedTags={setSelectedTags}
+              setSelectedLibrary={setSelectedLibrary}
+              setSelectedType={setSelectedType}
+              isDarkMode={isDarkMode}
+              language={language}
+              topOffset={0}
+            />
+          </div>
+        </div>
+      ) : (
         <TagSidebar
           TEMPLATE_TAGS={TEMPLATE_TAGS}
           availableTags={availableTags}
@@ -343,8 +378,9 @@ export const DiscoveryView = React.memo(({
           setSelectedType={setSelectedType}
           isDarkMode={isDarkMode}
           language={language}
+          topOffset={0}
         />
-      )}
+      ))}
 
       {/* Poster Content Container */}
       <div 

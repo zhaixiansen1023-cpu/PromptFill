@@ -634,7 +634,6 @@ export const SettingsView = ({
   );
 
   const isEmbedded = window.self !== window.top;
-
   return (
     <div style={globalContainerStyle} className="flex-1 flex flex-col h-full overflow-hidden relative">
       {/* Header Area - Parallel Titles */}

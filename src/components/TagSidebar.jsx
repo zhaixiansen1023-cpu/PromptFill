@@ -21,7 +21,8 @@ export const TagSidebar = ({
 
   // 样式和主题
   isDarkMode = false,
-  language = 'cn'
+  language = 'cn',
+  topOffset = 0
 }) => {
   const [tagsCollapsed, setTagsCollapsed] = useState(false);
 
@@ -43,17 +44,20 @@ export const TagSidebar = ({
   return (
     <div
       className="hidden lg:flex flex-col flex-shrink-0 h-full overflow-hidden"
-      style={{ width: '140px' }}
+      style={{
+        width: '140px',
+        marginTop: topOffset > 0 ? `${topOffset}px` : 0,
+        height: topOffset > 0 ? `calc(100% - ${topOffset}px)` : '100%'
+      }}
     >
       {/* 内层与 TemplatesSidebar/BanksSidebar 一致：圆角+背景，标题区从内层顶开始算 pt-4 */}
       <div
         className="flex flex-col w-full h-full overflow-hidden"
         style={isDarkMode ? {
           borderRadius: '24px',
-          border: '1px solid transparent',
-          backgroundImage: 'linear-gradient(180deg, #3B3B3B 0%, #242120 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)',
-          backgroundOrigin: 'border-box',
-          backgroundClip: 'padding-box, border-box',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          background: 'linear-gradient(180deg, rgba(29, 31, 36, 0.97) 0%, rgba(16, 17, 21, 0.99) 100%)',
+          boxShadow: '0 18px 36px rgba(3, 8, 18, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
         } : {
           borderRadius: '24px',
           border: '1px solid rgba(255, 255, 255, 0.50)',

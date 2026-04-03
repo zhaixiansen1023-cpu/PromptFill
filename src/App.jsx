@@ -48,6 +48,7 @@ const App = () => {
   // 获取当前路由
   const location = useLocation();
   const isSettingPage = location.pathname === '/setting';
+  const isEmbedded = window.self !== window.top;
 
   const { isDarkMode, language, t, themeMode, setThemeMode, setLanguage, isTagSidebarVisible, isTemplatesSidebarVisible, isBanksSidebarVisible } = useRootContext();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -3498,6 +3499,7 @@ ${tagsHint ? `\n${tagsHint}` : ''}
                 setSelectedType={setSelectedType}
                 isDarkMode={isDarkMode}
                 language={language}
+                topOffset={isEmbedded ? 44 : 0}
               />
             )}
 

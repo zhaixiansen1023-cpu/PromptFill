@@ -63,7 +63,7 @@ export const RootLayout = ({ children }) => {
 
   return (
     <div 
-      className={`flex ${isEmbedded ? 'flex-col' : 'flex-row'} h-screen h-[100dvh] w-screen overflow-hidden p-0 md:p-4 select-none transition-colors duration-300 ${
+      className={`relative flex ${isEmbedded ? 'flex-col' : 'flex-row'} h-screen h-[100dvh] w-screen overflow-hidden p-0 md:p-4 select-none transition-colors duration-300 ${
         isDarkMode ? 'dark-mode dark-gradient-bg' : 'mesh-gradient-bg'
       }`}
     >
@@ -121,7 +121,7 @@ export const RootLayout = ({ children }) => {
       
 
 
-      <div className={`flex-1 h-full min-w-0 min-h-0 flex flex-col relative z-[1] ${isEmbedded ? 'mt-1' : ''}`}>
+      <div className="flex-1 h-full min-w-0 min-h-0 flex flex-col relative z-[1]">
         <div className="flex-1 min-h-0 overflow-hidden">
           {children}
         </div>
