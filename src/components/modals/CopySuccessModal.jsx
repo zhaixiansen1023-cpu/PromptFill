@@ -44,18 +44,25 @@ const CopySuccessModal = ({ isOpen, onClose, bestModel, templateType = 'image', 
     }
   ] : [
     {
+      id: 'chatgpt',
+      name: 'ChatGPT (OpenAI)',
+      url: 'https://chatgpt.com',
+      description: { cn: 'OpenAI 官方平台', en: 'Official OpenAI' },
+      models: ['GPT-image-2']
+    },
+    {
       id: 'nano',
       name: 'Nano Banana (Gemini)',
       url: 'https://gemini.google.com',
       description: { cn: 'Gemini 官方平台', en: 'Official Gemini' },
-      models: ['Nano Banana Pro']
+      models: ['Nano Banana Pro', 'Nano Banana 2']
     },
     {
       id: 'mj',
       name: 'Midjourney',
       url: 'https://alpha.midjourney.com/imagine',
       description: { cn: 'MJ 官方网页版', en: 'Official MJ Web' },
-      models: ['Midjourney V7']
+      models: ['Midjourney V7', 'Midjourney niji 7', 'Midjourney v8.1']
     },
     {
       id: 'jimeng',

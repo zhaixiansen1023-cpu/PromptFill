@@ -488,46 +488,41 @@ export const TemplateEditor = React.memo(({
             {/* 编辑模式 */}
             {isEditing ? (
               isMobileDevice ? (
-              /* ==================== MOBILE: 四段手风琴 ==================== */
+              /* ==================== MOBILE: 工具栏（固定） + 手风琴（滚动） ==================== */
+              <>
+              {/* 编辑工具栏 — 不随内容滚动 */}
+              <div className={`flex-shrink-0 backdrop-blur-sm ${isDarkMode ? 'bg-white/5' : 'bg-[#F0E4D8]/50'}`}>
+                <EditorToolbar
+                  onInsertClick={() => setIsInsertModalOpen(true)}
+                  onSmartSplitClick={onSmartSplitClick}
+                  onDebugSplitRun={onDebugSplitRun}
+                  getDebugSystemPrompt={getDebugSystemPrompt}
+                  getDebugSystemPromptLite={getDebugSystemPromptLite}
+                  isSmartSplitLoading={isSmartSplitLoading}
+                  hasSplitSnapshot={!!splitSnapshot}
+                  splitDurationMs={splitSnapshot?.splitDurationMs ?? null}
+                  onResetClick={onResetClick}
+                  canUndo={historyPast.length > 0}
+                  canRedo={historyFuture.length > 0}
+                  onUndo={handleUndo}
+                  onRedo={handleRedo}
+                  t={t}
+                  isDarkMode={isDarkMode}
+                  cursorInVariable={cursorInVariable}
+                  currentGroupId={currentGroupId}
+                  onSetGroup={handleSetGroup}
+                  onRemoveGroup={handleRemoveGroup}
+                  language={language}
+                  showLanguageToggle={showLanguageToggle}
+                  templateLanguage={templateLanguage}
+                  onSetTemplateLanguage={setTemplateLanguage}
+                  supportsChinese={supportsChinese}
+                  supportsEnglish={supportsEnglish}
+                />
+              </div>
+
+              {/* 手风琴内容区 — 可滚动 */}
               <div className="flex-1 relative overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar">
-                {/* 编辑工具栏 */}
-                <div className={`backdrop-blur-sm ${isDarkMode ? 'bg-white/5' : 'bg-[#F0E4D8]/50'}`}>
-                  <EditorToolbar
-                    onInsertClick={() => setIsInsertModalOpen(true)}
-                    onSmartSplitClick={onSmartSplitClick}
-                    onDebugSplitRun={onDebugSplitRun}
-                    getDebugSystemPrompt={getDebugSystemPrompt}
-                    getDebugSystemPromptLite={getDebugSystemPromptLite}
-                    isSmartSplitLoading={isSmartSplitLoading}
-                    hasSplitSnapshot={!!splitSnapshot}
-                    splitDurationMs={splitSnapshot?.splitDurationMs ?? null}
-                    onResetClick={onResetClick}
-                    canUndo={historyPast.length > 0}
-                    canRedo={historyFuture.length > 0}
-                    onUndo={handleUndo}
-                    onRedo={handleRedo}
-                    t={t}
-                    isDarkMode={isDarkMode}
-                    cursorInVariable={cursorInVariable}
-                    currentGroupId={currentGroupId}
-                    onSetGroup={handleSetGroup}
-                    onRemoveGroup={handleRemoveGroup}
-                    language={language}
-                  />
-                </div>
-
-                {/* 语言切换 - 单独一行 */}
-                {showLanguageToggle && (
-                  <div className={`flex items-center justify-center py-1 border-b ${isDarkMode ? 'border-white/5' : 'border-gray-200/60'}`}>
-                    <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} shrink-0 scale-75`}>
-                      <button onClick={() => supportsChinese && setTemplateLanguage('cn')}
-                        className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${templateLanguage === 'cn' ? 'is-active' : ''} !px-2`}>CN</button>
-                      <button onClick={() => supportsEnglish && setTemplateLanguage('en')}
-                        className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${templateLanguage === 'en' ? 'is-active' : ''} !px-2`}>EN</button>
-                    </div>
-                  </div>
-                )}
-
                 {/* ---- Section 1: 基础信息 ---- */}
                 <div className={`border-b ${isDarkMode ? 'border-white/5' : 'border-gray-200/60'}`}>
                   <button
@@ -571,7 +566,7 @@ export const TemplateEditor = React.memo(({
                           </button>
                           {activeSelect === 'bestModel' && (
                             <div className={`absolute top-full left-0 right-0 mt-1 z-50 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border ${isDarkMode ? 'bg-[#2A2928] border-white/10' : 'bg-white border-gray-100'}`} style={{ backdropFilter: 'blur(20px)' }}>
-                              {(activeTemplate.type === 'video' ? ['Seedance 2.0', 'Veo 3.1', 'Kling 3.0'] : ['Nano Banana Pro', 'Midjourney V7', 'Zimage']).map((opt) => (
+                              {(activeTemplate.type === 'video' ? ['Seedance 2.0', 'Veo 3.1', 'Kling 3.0'] : ['Nano Banana Pro', 'Nano Banana 2', 'Midjourney V7', 'Midjourney niji 7', 'Midjourney v8.1', 'GPT-image-2', 'Zimage']).map((opt) => (
                                 <button key={opt} onClick={() => { updateTemplateProperty('bestModel', opt); setActiveSelect(null); }}
                                   className={`w-full text-left px-3 py-1.5 text-xs transition-all flex items-center justify-between ${tempTemplateBestModel === opt ? 'bg-orange-500/10 text-orange-500 font-bold' : (isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-600 hover:bg-gray-50')}`}>
                                   {opt}{tempTemplateBestModel === opt && <Check size={10} />}
@@ -783,6 +778,7 @@ export const TemplateEditor = React.memo(({
                   )}
                 </div>
               </div>
+              </>
               ) : (
               /* ==================== DESKTOP: 四段手风琴 ==================== */
               <div className="flex-1 relative overflow-y-auto overflow-x-hidden flex flex-col custom-scrollbar">
@@ -855,7 +851,7 @@ export const TemplateEditor = React.memo(({
                           </button>
                           {activeSelect === 'bestModel' && (
                             <div className={`absolute top-full left-0 right-0 mt-1 z-50 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border ${isDarkMode ? 'bg-[#2A2928] border-white/10' : 'bg-white border-gray-100'}`} style={{ backdropFilter: 'blur(20px)' }}>
-                              {(activeTemplate.type === 'video' ? ['Seedance 2.0', 'Veo 3.1', 'Kling 3.0'] : ['Nano Banana Pro', 'Midjourney V7', 'Zimage']).map((opt) => (
+                              {(activeTemplate.type === 'video' ? ['Seedance 2.0', 'Veo 3.1', 'Kling 3.0'] : ['Nano Banana Pro', 'Nano Banana 2', 'Midjourney V7', 'Midjourney niji 7', 'Midjourney v8.1', 'GPT-image-2', 'Zimage']).map((opt) => (
                                 <button key={opt} onClick={() => { updateTemplateProperty('bestModel', opt); setActiveSelect(null); }}
                                   className={`w-full text-left px-3 py-1.5 text-xs transition-all flex items-center justify-between ${tempTemplateBestModel === opt ? 'bg-orange-500/10 text-orange-500 font-bold' : (isDarkMode ? 'text-gray-400 hover:bg-white/5 hover:text-white' : 'text-gray-600 hover:bg-gray-50')}`}>
                                   {opt}{tempTemplateBestModel === opt && <Check size={10} />}
@@ -1140,8 +1136,10 @@ export const TemplateEditor = React.memo(({
                     updateActiveTemplateContent={updateActiveTemplateContent}
                     textareaRef={textareaRef}
                     templateLanguage={templateLanguage}
-                    onGenerateAITerms={onGenerateAITerms}  // 传递 AI 生成回调
-                    handleShareLink={handleShareLink} // 传递分享回调
+                    onGenerateAITerms={onGenerateAITerms}
+                    onSmartSplitClick={onSmartSplitClick}
+                    isSmartSplitLoading={isSmartSplitLoading}
+                    handleShareLink={handleShareLink}
                     updateTemplateProperty={updateTemplateProperty}
                     templates={templates}
                     setActiveTemplateId={setActiveTemplateId}

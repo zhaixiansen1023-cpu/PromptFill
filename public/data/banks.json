@@ -799,6 +799,46 @@
       "category": "location",
       "options": [
         {
+          "cn": "广州",
+          "en": "Guangzhou"
+        },
+        {
+          "cn": "上海",
+          "en": "Shanghai"
+        },
+        {
+          "cn": "北京",
+          "en": "Beijing"
+        },
+        {
+          "cn": "深圳",
+          "en": "Shenzhen"
+        },
+        {
+          "cn": "杭州",
+          "en": "Hangzhou"
+        },
+        {
+          "cn": "成都",
+          "en": "Chengdu"
+        },
+        {
+          "cn": "西安",
+          "en": "Xi'an"
+        },
+        {
+          "cn": "重庆",
+          "en": "Chongqing"
+        },
+        {
+          "cn": "南京",
+          "en": "Nanjing"
+        },
+        {
+          "cn": "苏州",
+          "en": "Suzhou"
+        },
+        {
           "cn": "京都",
           "en": "Kyoto"
         },
@@ -7039,6 +7079,767 @@
           "en": "sketchy hand-drawn style"
         }
       ]
+    },
+    "container_type": {
+      "label": {
+        "cn": "容器类型",
+        "en": "Container Type"
+      },
+      "category": "item",
+      "options": [
+        {
+          "cn": "750ml玻璃酒瓶",
+          "en": "750ml glass wine bottle"
+        },
+        {
+          "cn": "500ml透明玻璃水瓶",
+          "en": "500ml clear glass water bottle"
+        },
+        {
+          "cn": "1升玻璃罐",
+          "en": "1 liter glass jar"
+        },
+        {
+          "cn": "玻璃香水瓶",
+          "en": "glass perfume bottle"
+        },
+        {
+          "cn": "球形玻璃容器",
+          "en": "spherical glass vessel"
+        },
+        {
+          "cn": "透明玻璃烧杯",
+          "en": "transparent glass beaker"
+        },
+        {
+          "cn": "复古玻璃灯泡",
+          "en": "vintage glass light bulb"
+        },
+        {
+          "cn": "柱形玻璃花瓶",
+          "en": "cylindrical glass vase"
+        },
+        {
+          "cn": "玻璃试管",
+          "en": "glass test tube"
+        },
+        {
+          "cn": "透明玻璃球",
+          "en": "transparent glass sphere"
+        }
+      ]
+    },
+    "view_type": {
+      "label": {
+        "cn": "视图类型",
+        "en": "View Type"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "横截面视图",
+          "en": "cross-section view"
+        },
+        {
+          "cn": "透视图",
+          "en": "transparent view"
+        },
+        {
+          "cn": "剖面图",
+          "en": "cutaway view"
+        },
+        {
+          "cn": "侧视图",
+          "en": "side view"
+        },
+        {
+          "cn": "俯视图",
+          "en": "top-down view"
+        },
+        {
+          "cn": "内部视角",
+          "en": "interior view"
+        },
+        {
+          "cn": "透明剖视图",
+          "en": "see-through section view"
+        },
+        {
+          "cn": "微观视角",
+          "en": "microscopic view"
+        }
+      ]
+    },
+    "landscape_location": {
+      "label": {
+        "cn": "景观地点",
+        "en": "Landscape Location"
+      },
+      "category": "location",
+      "options": [
+        {
+          "cn": "特兰西瓦尼亚葡萄园",
+          "en": "Transylvania vineyard"
+        },
+        {
+          "cn": "托斯卡纳向日葵田",
+          "en": "Tuscan sunflower field"
+        },
+        {
+          "cn": "京都竹林",
+          "en": "Kyoto bamboo forest"
+        },
+        {
+          "cn": "瑞士阿尔卑斯山村",
+          "en": "Swiss Alpine village"
+        },
+        {
+          "cn": "普罗旺斯薰衣草田",
+          "en": "Provence lavender field"
+        },
+        {
+          "cn": "挪威峡湾",
+          "en": "Norwegian fjord"
+        },
+        {
+          "cn": "撒哈拉沙漠绿洲",
+          "en": "Sahara desert oasis"
+        },
+        {
+          "cn": "亚马逊雨林",
+          "en": "Amazon rainforest"
+        },
+        {
+          "cn": "中国水墨山水",
+          "en": "Chinese ink landscape"
+        },
+        {
+          "cn": "日本樱花山谷",
+          "en": "Japanese cherry blossom valley"
+        }
+      ]
+    },
+    "landscape_features": {
+      "label": {
+        "cn": "景观特征",
+        "en": "Landscape Features"
+      },
+      "category": "location",
+      "options": [
+        {
+          "cn": "起伏山丘、整齐葡萄架、土路、小农舍",
+          "en": "rolling hills, neat vine rows, dirt paths, small farmhouse"
+        },
+        {
+          "cn": "连绵山脉、松树林、石板路、山间小屋",
+          "en": "mountain ranges, pine forests, stone paths, mountain cabins"
+        },
+        {
+          "cn": "竹林小径、石灯笼、溪流、茶屋",
+          "en": "bamboo paths, stone lanterns, streams, tea house"
+        },
+        {
+          "cn": "金色花海、柏树路、农庄、稻草人",
+          "en": "golden flower fields, cypress roads, farmhouses, scarecrows"
+        },
+        {
+          "cn": "紫色花田、石墙、薰衣草农舍、蜜蜂",
+          "en": "purple flower fields, stone walls, lavender farmhouses, bees"
+        },
+        {
+          "cn": "瀑布、峭壁、渔村、渔船",
+          "en": "waterfalls, cliffs, fishing villages, fishing boats"
+        },
+        {
+          "cn": "棕榈树、水池、棕榈叶小屋、沙漠狐狸",
+          "en": "palm trees, water pools, palm leaf huts, desert foxes"
+        },
+        {
+          "cn": "热带雨林、藤蔓、树屋、鹦鹉",
+          "en": "rainforest, vines, treehouses, parrots"
+        },
+        {
+          "cn": "山峰、云雾、古松、寺庙",
+          "en": "mountain peaks, clouds, ancient pines, temple"
+        },
+        {
+          "cn": "樱花树、神社、木桥、狐狸雕像",
+          "en": "cherry blossom trees, shrine, wooden bridge, fox statues"
+        }
+      ]
+    },
+    "lighting_time": {
+      "label": {
+        "cn": "时间光照",
+        "en": "Lighting Time"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "清晨阳光",
+          "en": "morning sunlight"
+        },
+        {
+          "cn": "午后金色阳光",
+          "en": "afternoon golden sunlight"
+        },
+        {
+          "cn": "日落霞光",
+          "en": "sunset glow"
+        },
+        {
+          "cn": "正午明亮阳光",
+          "en": "midday bright sunlight"
+        },
+        {
+          "cn": "黎明柔光",
+          "en": "dawn soft light"
+        },
+        {
+          "cn": "黄昏暮光",
+          "en": "dusk twilight"
+        },
+        {
+          "cn": "月光",
+          "en": "moonlight"
+        },
+        {
+          "cn": "多云漫射光",
+          "en": "overcast diffused light"
+        }
+      ]
+    },
+    "detail_level": {
+      "label": {
+        "cn": "细节程度",
+        "en": "Detail Level"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "复杂细节",
+          "en": "intricate details"
+        },
+        {
+          "cn": "超精细细节",
+          "en": "ultra-fine details"
+        },
+        {
+          "cn": "微观细节",
+          "en": "microscopic details"
+        },
+        {
+          "cn": "精致纹理",
+          "en": "refined textures"
+        },
+        {
+          "cn": "写实细节",
+          "en": "realistic details"
+        },
+        {
+          "cn": "极简细节",
+          "en": "minimalist details"
+        }
+      ]
+    },
+    "glass_effect": {
+      "label": {
+        "cn": "玻璃效果",
+        "en": "Glass Effect"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "真实玻璃反射",
+          "en": "realistic glass reflections"
+        },
+        {
+          "cn": "水晶般透明",
+          "en": "crystal clear transparency"
+        },
+        {
+          "cn": "玻璃折射效果",
+          "en": "glass refraction effects"
+        },
+        {
+          "cn": "彩虹色反光",
+          "en": "iridescent reflections"
+        },
+        {
+          "cn": "磨砂玻璃质感",
+          "en": "frosted glass texture"
+        },
+        {
+          "cn": "厚重玻璃边缘",
+          "en": "thick glass edges"
+        },
+        {
+          "cn": "玻璃高光",
+          "en": "glass highlights"
+        },
+        {
+          "cn": "透明玻璃效果",
+          "en": "transparent glass effects"
+        }
+      ]
+    },
+    "background_type": {
+      "label": {
+        "cn": "背景类型",
+        "en": "Background Type"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "工作室背景",
+          "en": "studio background"
+        },
+        {
+          "cn": "极简纯色背景",
+          "en": "minimalist solid color background"
+        },
+        {
+          "cn": "渐变背景",
+          "en": "gradient background"
+        },
+        {
+          "cn": "白色背景",
+          "en": "white background"
+        },
+        {
+          "cn": "深色背景",
+          "en": "dark background"
+        },
+        {
+          "cn": "模糊自然背景",
+          "en": "blurred natural background"
+        },
+        {
+          "cn": "纹理背景",
+          "en": "textured background"
+        },
+        {
+          "cn": "无缝背景",
+          "en": "seamless background"
+        }
+      ]
+    },
+    "museum_theme": {
+      "label": {
+        "cn": "博物馆主题",
+        "en": "Museum Theme"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "明制汉服",
+          "en": "Ming Dynasty Hanfu"
+        },
+        {
+          "cn": "唐代官服",
+          "en": "Tang Dynasty Official Robe"
+        },
+        {
+          "cn": "宋代文人便服",
+          "en": "Song Dynasty Scholar Casual Wear"
+        },
+        {
+          "cn": "清代朝服",
+          "en": "Qing Dynasty Court Attire"
+        },
+        {
+          "cn": "汉代曲裾深衣",
+          "en": "Han Dynasty Quju Shenyi Robe"
+        },
+        {
+          "cn": "中国古代甲胄",
+          "en": "Ancient Chinese Armor"
+        },
+        {
+          "cn": "斗栱（木构建筑构件）",
+          "en": "Dougong Timber Bracket"
+        },
+        {
+          "cn": "景泰蓝掐丝珐琅",
+          "en": "Cloisonné Enamel Craftsmanship"
+        },
+        {
+          "cn": "宋代汝窑青瓷",
+          "en": "Song Dynasty Ru Ware Celadon"
+        },
+        {
+          "cn": "敦煌供养人服饰",
+          "en": "Dunhuang Donor Figure Attire"
+        },
+        {
+          "cn": "传统云纹锦缎织物",
+          "en": "Traditional Cloud Pattern Brocade"
+        },
+        {
+          "cn": "清代满族女性旗装",
+          "en": "Qing Dynasty Manchu Women's Qi Attire"
+        },
+        {
+          "cn": "古代玉器与纹饰体系",
+          "en": "Ancient Jade and Decorative Pattern System"
+        },
+        {
+          "cn": "明式木质家具结构",
+          "en": "Ming Style Wooden Furniture Structure"
+        }
+      ]
+    },
+    "ad_regional_style": {
+      "label": {
+        "cn": "广告地域风格",
+        "en": "Ad Regional Style"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "中式广告",
+          "en": "Chinese advertisements"
+        },
+        {
+          "cn": "日式广告",
+          "en": "Japanese advertisements"
+        },
+        {
+          "cn": "韩式广告",
+          "en": "Korean advertisements"
+        },
+        {
+          "cn": "意大利广告",
+          "en": "Italian advertisements"
+        },
+        {
+          "cn": "法式广告",
+          "en": "French advertisements"
+        },
+        {
+          "cn": "美式广告",
+          "en": "American advertisements"
+        },
+        {
+          "cn": "北欧风广告",
+          "en": "Nordic-style advertisements"
+        },
+        {
+          "cn": "港式复古广告",
+          "en": "Hong Kong retro-style advertisements"
+        }
+      ]
+    },
+    "city_landmarks": {
+      "label": {
+        "cn": "对应地标",
+        "en": "City Landmarks"
+      },
+      "category": "location",
+      "options": [
+        {
+          "cn": "珠江新城双塔、猎德大桥、白云山轮廓、岭南骑楼",
+          "en": "Zhujiang New Town twin towers, Liede Bridge, Baiyun Mountain silhouette, Lingnan arcade buildings"
+        },
+        {
+          "cn": "外滩、东方明珠、陆家嘴天际线、石库门",
+          "en": "The Bund, Oriental Pearl Tower, Lujiazui skyline, Shikumen"
+        },
+        {
+          "cn": "故宫角楼、国贸CBD、胡同灰瓦、天坛剪影",
+          "en": "Forbidden City corner towers, Guomao CBD, hutong grey tiles, Temple of Heaven silhouette"
+        },
+        {
+          "cn": "平安金融中心、深圳湾大桥、莲花山、滨海天际线",
+          "en": "Ping An IFC, Shenzhen Bay Bridge, Lianhuashan, coastal skyline"
+        },
+        {
+          "cn": "雷峰塔、三潭印月、钱江新城、南宋御街",
+          "en": "Leifeng Pagoda, Three Pools Mirroring the Moon, Qianjiang New Town, Southern Song Imperial Street"
+        },
+        {
+          "cn": "九眼桥、太古里、青城山轮廓、锦江夜色",
+          "en": "Jiuyan Bridge, Taikoo Li, Qingcheng Mountain silhouette, Jinjiang River night"
+        },
+        {
+          "cn": "大雁塔、城墙、钟楼、大唐不夜城",
+          "en": "Giant Wild Goose Pagoda, city wall, Bell Tower, Datang Everbright City"
+        },
+        {
+          "cn": "洪崖洞、长江索道、两江交汇、山城夜景",
+          "en": "Hongya Cave, Yangtze River cableway, two rivers merge, mountain city night view"
+        },
+        {
+          "cn": "紫峰大厦、长江大桥、中山陵、秦淮河",
+          "en": "Zifeng Tower, Nanjing Yangtze River Bridge, Sun Yat-sen Mausoleum, Qinhuai River"
+        },
+        {
+          "cn": "苏州园林亭台、东方之门、古运河、平江路",
+          "en": "Suzhou classical garden pavilions, Gate of the Orient, ancient canal, Pingjiang Road"
+        }
+      ]
+    },
+    "poster_texture_style": {
+      "label": {
+        "cn": "纹理样式",
+        "en": "Texture Style"
+      },
+      "category": "visual",
+      "options": [
+        {
+          "cn": "大面积留白 + 淡宣纸肌理",
+          "en": "Generous negative space with light rice-paper grain"
+        },
+        {
+          "cn": "绢本淡纹 + 柔和丝感",
+          "en": "Subtle silk-scroll weave with soft sheen"
+        },
+        {
+          "cn": "微颗粒岩彩 + 手工纸触感",
+          "en": "Fine mineral pigment grain with handmade paper tactility"
+        },
+        {
+          "cn": "祥云水纹浮雕烫金质感",
+          "en": "Embossed auspicious clouds and water ripples with gold-foil hot-stamp feel"
+        },
+        {
+          "cn": "云纹锦缎肌理 + 低调光泽",
+          "en": "Brocade cloud pattern texture with understated luster"
+        },
+        {
+          "cn": "冰裂釉纹 + 清透层次",
+          "en": "Crackle-glaze pattern with clear layered depth"
+        }
+      ]
+    },
+    "classical_poem": {
+      "label": {
+        "cn": "经典诗词篇目",
+        "en": "Classical Poem"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "春夜喜雨",
+          "en": "A Welcome Rain on a Spring Night"
+        },
+        {
+          "cn": "静夜思",
+          "en": "Quiet Night Thoughts"
+        },
+        {
+          "cn": "登鹳雀楼",
+          "en": "On the Stork Tower"
+        },
+        {
+          "cn": "悯农（其一）",
+          "en": "Pity the Farmers (Part One)"
+        },
+        {
+          "cn": "咏鹅",
+          "en": "Ode to the Goose"
+        },
+        {
+          "cn": "望庐山瀑布",
+          "en": "Gazing at the Waterfall on Mount Lu"
+        },
+        {
+          "cn": "江雪",
+          "en": "River Snow"
+        },
+        {
+          "cn": "赠汪伦",
+          "en": "To Wang Lun"
+        },
+        {
+          "cn": "游子吟",
+          "en": "Song of the Wandering Son"
+        },
+        {
+          "cn": "回乡偶书",
+          "en": "Homecoming"
+        },
+        {
+          "cn": "敕勒歌",
+          "en": "Song of Chile"
+        },
+        {
+          "cn": "早发白帝城",
+          "en": "Early Departure from Baidi City"
+        },
+        {
+          "cn": "枫桥夜泊",
+          "en": "Mooring at Maple Bridge by Night"
+        },
+        {
+          "cn": "清明",
+          "en": "Qingming"
+        },
+        {
+          "cn": "黄鹤楼送孟浩然之广陵",
+          "en": "Seeing Meng Haoran Off at Yellow Crane Tower"
+        }
+      ]
+    },
+    "app_icon_category": {
+      "label": {
+        "cn": "APP 品类",
+        "en": "App Category"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "运动类APP",
+          "en": "Sports app"
+        },
+        {
+          "cn": "医疗健康",
+          "en": "Health & medical"
+        },
+        {
+          "cn": "本地生活",
+          "en": "Local services"
+        },
+        {
+          "cn": "金融理财",
+          "en": "Finance & wealth"
+        },
+        {
+          "cn": "教育学习",
+          "en": "Education"
+        },
+        {
+          "cn": "社交娱乐",
+          "en": "Social & entertainment"
+        },
+        {
+          "cn": "电商购物",
+          "en": "E-commerce"
+        },
+        {
+          "cn": "出行导航",
+          "en": "Travel & navigation"
+        }
+      ]
+    },
+    "collab_theme_a": {
+      "label": {
+        "cn": "联名主题 A（文学/童话 IP）",
+        "en": "Collab Theme A (Story IP)"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "小王子",
+          "en": "The Little Prince"
+        },
+        {
+          "cn": "龙猫",
+          "en": "My Neighbor Totoro"
+        },
+        {
+          "cn": "千与千寻",
+          "en": "Spirited Away"
+        },
+        {
+          "cn": "哈利·波特",
+          "en": "Harry Potter"
+        },
+        {
+          "cn": "魔戒",
+          "en": "The Lord of the Rings"
+        },
+        {
+          "cn": "小王子（原版插画风格）",
+          "en": "Le Petit Prince (original illustration style)"
+        },
+        {
+          "cn": "爱丽丝梦游仙境",
+          "en": "Alice in Wonderland"
+        },
+        {
+          "cn": "彼得·潘",
+          "en": "Peter Pan"
+        }
+      ]
+    },
+    "collab_theme_b": {
+      "label": {
+        "cn": "联名主题 B（科技/航天/科幻）",
+        "en": "Collab Theme B (Tech / Space / Sci-Fi)"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "SpaceX",
+          "en": "SpaceX"
+        },
+        {
+          "cn": "NASA",
+          "en": "NASA"
+        },
+        {
+          "cn": "中国航天",
+          "en": "China National Space Administration (CNSA)"
+        },
+        {
+          "cn": "欧洲航天局 (ESA)",
+          "en": "European Space Agency (ESA)"
+        },
+        {
+          "cn": "Blue Origin",
+          "en": "Blue Origin"
+        },
+        {
+          "cn": "星际迷航",
+          "en": "Star Trek"
+        },
+        {
+          "cn": "星球大战",
+          "en": "Star Wars"
+        },
+        {
+          "cn": "国际空间站",
+          "en": "International Space Station"
+        }
+      ]
+    },
+    "card_game_collection": {
+      "label": {
+        "cn": "卡牌集主题",
+        "en": "Card Collection Theme"
+      },
+      "category": "other",
+      "options": [
+        {
+          "cn": "中国古代诗人",
+          "en": "Ancient Chinese poets"
+        },
+        {
+          "cn": "水浒英雄",
+          "en": "Water Margin heroes"
+        },
+        {
+          "cn": "三国人物",
+          "en": "Three Kingdoms characters"
+        },
+        {
+          "cn": "西游记人物",
+          "en": "Journey to the West characters"
+        },
+        {
+          "cn": "唐宋名家",
+          "en": "Tang and Song masters"
+        },
+        {
+          "cn": "仙侠武侠名士",
+          "en": "Wuxia and immortal heroes"
+        },
+        {
+          "cn": "封神演义人物",
+          "en": "Investiture of the Gods characters"
+        }
+      ]
     }
   },
   "defaults": {
@@ -7741,6 +8542,74 @@
     "comic_art_style": {
       "cn": "传统黑白漫画风格",
       "en": "traditional black and white manga style"
+    },
+    "container_type": {
+      "cn": "750ml玻璃酒瓶",
+      "en": "750ml glass wine bottle"
+    },
+    "view_type": {
+      "cn": "横截面视图",
+      "en": "cross-section view"
+    },
+    "landscape_location": {
+      "cn": "特兰西瓦尼亚葡萄园",
+      "en": "Transylvania vineyard"
+    },
+    "landscape_features": {
+      "cn": "起伏山丘、整齐葡萄架、土路、小农舍",
+      "en": "rolling hills, neat vine rows, dirt paths, small farmhouse"
+    },
+    "lighting_time": {
+      "cn": "清晨阳光",
+      "en": "morning sunlight"
+    },
+    "detail_level": {
+      "cn": "复杂细节",
+      "en": "intricate details"
+    },
+    "glass_effect": {
+      "cn": "真实玻璃反射",
+      "en": "realistic glass reflections"
+    },
+    "background_type": {
+      "cn": "工作室背景",
+      "en": "studio background"
+    },
+    "museum_theme": {
+      "cn": "明制汉服",
+      "en": "Ming Dynasty Hanfu"
+    },
+    "ad_regional_style": {
+      "cn": "中式广告",
+      "en": "Chinese advertisements"
+    },
+    "city_landmarks": {
+      "cn": "珠江新城双塔、猎德大桥、白云山轮廓、岭南骑楼",
+      "en": "Zhujiang New Town twin towers, Liede Bridge, Baiyun Mountain silhouette, Lingnan arcade buildings"
+    },
+    "poster_texture_style": {
+      "cn": "大面积留白 + 淡宣纸肌理",
+      "en": "Generous negative space with light rice-paper grain"
+    },
+    "classical_poem": {
+      "cn": "春夜喜雨",
+      "en": "A Welcome Rain on a Spring Night"
+    },
+    "app_icon_category": {
+      "cn": "运动类APP",
+      "en": "Sports app"
+    },
+    "collab_theme_a": {
+      "cn": "小王子",
+      "en": "The Little Prince"
+    },
+    "collab_theme_b": {
+      "cn": "SpaceX",
+      "en": "SpaceX"
+    },
+    "card_game_collection": {
+      "cn": "中国古代诗人",
+      "en": "Ancient Chinese poets"
     }
   },
   "categories": {
