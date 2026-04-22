@@ -7840,6 +7840,59 @@
           "en": "Investiture of the Gods characters"
         }
       ]
+    },
+    "ancient_celebrity": {
+      "label": {
+        "cn": "古代名人",
+        "en": "Historical Figure"
+      },
+      "category": "character",
+      "options": [
+        {
+          "cn": "苏轼",
+          "en": "Su Shi"
+        },
+        {
+          "cn": "李白",
+          "en": "Li Bai"
+        },
+        {
+          "cn": "杜甫",
+          "en": "Du Fu"
+        },
+        {
+          "cn": "王羲之",
+          "en": "Wang Xizhi"
+        },
+        {
+          "cn": "李清照",
+          "en": "Li Qingzhao"
+        },
+        {
+          "cn": "陆游",
+          "en": "Lu You"
+        },
+        {
+          "cn": "辛弃疾",
+          "en": "Xin Qiji"
+        },
+        {
+          "cn": "王维",
+          "en": "Wang Wei"
+        },
+        {
+          "cn": "白居易",
+          "en": "Bai Juyi"
+        },
+        {
+          "cn": "欧阳修",
+          "en": "Ouyang Xiu"
+        },
+        {
+          "cn": "陶渊明",
+          "en": "Tao Yuanming"
+        }
+      ]
     }
   },
   "defaults": {
@@ -8610,6 +8663,10 @@
     "card_game_collection": {
       "cn": "中国古代诗人",
       "en": "Ancient Chinese poets"
+    },
+    "ancient_celebrity": {
+      "cn": "苏轼",
+      "en": "Su Shi"
     }
   },
   "categories": {
