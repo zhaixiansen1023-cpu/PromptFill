@@ -62,7 +62,7 @@ const SponsorModal = ({ isOpen, onClose, isDarkMode, language }) => {
           {/* 标题区域 */}
           <div className="text-center mb-6">
             <img
-              src="/images/LemonJuice.png"
+              src={`${import.meta.env.BASE_URL}images/LemonJuice.png`}
               alt="Lemon Juice"
               className="w-40 h-40 object-contain mx-auto mb-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-6 cursor-pointer"
             />

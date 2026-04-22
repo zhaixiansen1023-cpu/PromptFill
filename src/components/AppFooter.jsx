@@ -1,56 +1,10 @@
 import React from 'react';
-import { Home, PanelLeft, PanelRight } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { openExternalLink } from '../utils/platform';
 import { useRootContext } from '../context/RootContext';
 import { Tooltip } from './Tooltip';
 import { SettingsIcon } from './icons/SettingsIcon';
-
-/**
- * PanelLeftRightDashed - 中间面板图标（Lucide 暂无此 icon，用自定义 SVG 替代）
- */
-const PanelCenterIcon = ({ size = 24, className = '' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <line x1="9" y1="3" x2="9" y2="21" strokeDasharray="3 2" />
-    <line x1="15" y1="3" x2="15" y2="21" strokeDasharray="3 2" />
-  </svg>
-);
-
-/**
- * PanelToggleButton - 单个面板切换按钮
- */
-const PanelToggleButton = ({ isVisible, onClick, icon: Icon, tooltip, isDarkMode }) => (
-  <Tooltip content={tooltip} isDarkMode={isDarkMode}>
-    <button
-      onClick={onClick}
-      className={`
-        relative flex items-center justify-center w-7 h-7 rounded-lg
-        transition-all duration-200 ease-out
-        ${isVisible
-          ? isDarkMode
-            ? 'text-orange-400 bg-orange-500/15 hover:bg-orange-500/25 active:scale-95 active:bg-orange-500/30'
-            : 'text-orange-600 bg-orange-500/12 hover:bg-orange-500/20 active:scale-95 active:bg-orange-500/25'
-          : isDarkMode
-            ? 'text-gray-500 hover:text-gray-300 hover:bg-white/8 active:scale-95 active:bg-white/12'
-            : 'text-gray-400 hover:text-gray-600 hover:bg-black/6 active:scale-95 active:bg-black/10'
-        }
-      `}
-    >
-      <Icon size={15} strokeWidth={1.8} />
-    </button>
-  </Tooltip>
-);
 
 /**
  * AppFooter - 全局底部栏
@@ -62,56 +16,32 @@ export const AppFooter = ({ appVersion, isDarkMode: isDarkModeProp }) => {
   const {
     language,
     isDarkMode: isDarkModeCtx,
-    isTagSidebarVisible,
-    setIsTagSidebarVisible,
-    isTemplatesSidebarVisible,
-    setIsTemplatesSidebarVisible,
-    isBanksSidebarVisible,
-    setIsBanksSidebarVisible,
   } = useRootContext();
 
   const isDarkMode = isDarkModeProp ?? isDarkModeCtx;
   const isEmbedded = typeof window !== 'undefined' && window.self !== window.top;
+  const footerHeight = '42px';
 
   return (
     <footer
       className={isEmbedded
-        ? 'absolute inset-x-0 bottom-0 flex items-center justify-end px-4 pb-2 z-30 pointer-events-none'
-        : 'flex-shrink-0 flex items-center justify-between px-4 relative z-20'}
-      style={{ height: '42px' }}
+        ? 'fixed right-0 top-0 bottom-0 z-30 pointer-events-none'
+        : 'flex-shrink-0 flex items-center justify-end px-4 relative z-20'}
+      style={isEmbedded ? { width: footerHeight } : { height: footerHeight }}
     >
-      {/* 左侧：面板显隐控制按钮 */}
-      {!isEmbedded && (
-      <div className="flex items-center gap-1">
-        <PanelToggleButton
-          isVisible={isTagSidebarVisible}
-          onClick={() => setIsTagSidebarVisible(v => !v)}
-          icon={PanelLeft}
-          tooltip={isTagSidebarVisible ? '隐藏分类栏' : '显示分类栏'}
-          isDarkMode={isDarkMode}
-        />
-        <PanelToggleButton
-          isVisible={isTemplatesSidebarVisible}
-          onClick={() => setIsTemplatesSidebarVisible(v => !v)}
-          icon={PanelCenterIcon}
-          tooltip={isTemplatesSidebarVisible ? '隐藏模版列表' : '显示模版列表'}
-          isDarkMode={isDarkMode}
-        />
-        <PanelToggleButton
-          isVisible={isBanksSidebarVisible}
-          onClick={() => setIsBanksSidebarVisible(v => !v)}
-          icon={PanelRight}
-          tooltip={isBanksSidebarVisible ? '隐藏词库栏' : '显示词库栏'}
-          isDarkMode={isDarkMode}
-        />
-      </div>
-      )}
-
       {/* 右侧：作者信息 */}
       <div
-        className={`flex items-center gap-2.5 text-[11px] font-medium opacity-50 hover:opacity-90 transition-opacity ${isEmbedded ? 'pointer-events-auto ml-auto' : ''} ${
+        className={`flex items-center gap-2.5 text-[11px] font-medium opacity-50 hover:opacity-90 transition-opacity ${isEmbedded ? 'pointer-events-auto' : ''} ${
           isDarkMode ? 'text-gray-400' : 'text-gray-600'
         }`}
+        style={isEmbedded ? {
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          writingMode: 'vertical-rl',
+          whiteSpace: 'nowrap',
+        } : undefined}
       >
         {appVersion && (
           <>
@@ -154,15 +84,12 @@ export const AppFooter = ({ appVersion, isDarkMode: isDarkModeProp }) => {
           <Tooltip content={language === 'cn' ? '返回主页' : 'Back Home'} isDarkMode={isDarkMode}>
             <Link
               to="/explore"
-              className={`inline-flex items-center justify-center gap-1.5 h-6 px-2.5 rounded-full text-white transition-all duration-300 hover:scale-105 shadow-md ${
+              className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-white transition-all duration-300 hover:scale-110 shadow-md ${
                 isDarkMode ? 'bg-gray-700 hover:bg-orange-500' : 'bg-gray-700 hover:bg-orange-500'
               }`}
               title={language === 'cn' ? '返回主页' : 'Back Home'}
             >
-              <Home size={11} strokeWidth={2.1} />
-              <span className="text-[10px] font-semibold leading-none">
-                {language === 'cn' ? '返回主页' : 'Back Home'}
-              </span>
+              <Home size={12} strokeWidth={2.1} />
             </Link>
           </Tooltip>
         )}

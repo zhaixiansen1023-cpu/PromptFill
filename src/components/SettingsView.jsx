@@ -874,9 +874,9 @@ export const SettingsView = ({
             </button>
             <div className="flex flex-col items-center">
               <div className={`w-48 h-48 rounded-2xl overflow-hidden mb-4 border p-2 ${isDarkMode ? 'bg-black/20 border-white/5' : 'bg-gray-50 border-gray-100'}`}>
-                <img 
-                  src="/images/Wechat.jpg" 
-                  alt="WeChat QR Code" 
+                <img
+                  src={`${import.meta.env.BASE_URL}images/Wechat.jpg`}
+                  alt="WeChat QR Code"
                   className="w-full h-full object-contain rounded-lg"
                 />
               </div>

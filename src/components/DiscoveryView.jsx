@@ -6,9 +6,7 @@ import { TitleIcon } from './icons/TitleIcon';
 import { TitleDarkIcon } from './icons/TitleDarkIcon';
 import { getLocalized } from '../utils/helpers';
 import { PremiumButton } from './PremiumButton';
-import { Sidebar } from './Sidebar';
 import { TagSidebar } from './TagSidebar';
-import { useRootContext } from '../context/RootContext';
 import { TemplateCarousel } from './TemplateCarousel';
 import { MobileVideoFirstFrame } from './mobile';
 import { OptimizedImage } from './OptimizedImage';
@@ -121,7 +119,6 @@ export const DiscoveryView = React.memo(({
     TEMPLATE_TAGS,
     availableTags,
   }) => {
-    const { isTagSidebarVisible } = useRootContext();
     const isEmbedded = window.self !== window.top;
     const [columnCount, setColumnCount] = useState(1);
     const [columnGap, setColumnGap] = useState(20); // Default to gap-5 (20px)
@@ -330,57 +327,30 @@ export const DiscoveryView = React.memo(({
     <main
       className="flex-1 flex items-stretch gap-4 overflow-hidden"
     >
-      {/* Middle Side: Categories Sidebar (Desktop Only, 受面板显隐控制) */}
-      {isTagSidebarVisible && (isEmbedded ? (
-        <div className="hidden lg:flex flex-col flex-shrink-0 h-full min-h-0 overflow-hidden" style={{ width: '140px' }}>
-          <Sidebar
-            activeTab="home"
-            isSortMenuOpen={isSortMenuOpen}
-            setIsSortMenuOpen={setIsSortMenuOpen}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-            setRandomSeed={setRandomSeed}
-            onRefresh={handleRefreshSystemData}
-            language={language}
-            setLanguage={setLanguage}
-            isDarkMode={isDarkMode}
-            themeMode={themeMode}
-            setThemeMode={setThemeMode}
-            t={t}
-            isEmbedded={true}
-            embeddedInline={true}
-          />
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <TagSidebar
-              TEMPLATE_TAGS={TEMPLATE_TAGS}
-              availableTags={availableTags}
-              selectedTags={selectedTags}
-              selectedLibrary={selectedLibrary}
-              selectedType={selectedType}
-              setSelectedTags={setSelectedTags}
-              setSelectedLibrary={setSelectedLibrary}
-              setSelectedType={setSelectedType}
-              isDarkMode={isDarkMode}
-              language={language}
-              topOffset={0}
-            />
-          </div>
-        </div>
-      ) : (
-        <TagSidebar
-          TEMPLATE_TAGS={TEMPLATE_TAGS}
-          availableTags={availableTags}
-          selectedTags={selectedTags}
-          selectedLibrary={selectedLibrary}
-          selectedType={selectedType}
-          setSelectedTags={setSelectedTags}
-          setSelectedLibrary={setSelectedLibrary}
-          setSelectedType={setSelectedType}
-          isDarkMode={isDarkMode}
-          language={language}
-          topOffset={0}
-        />
-      ))}
+      {/* Middle Side: Categories Sidebar (Desktop Only)
+          新版 TagSidebar 常驻，折叠态自动缩为 76px 窄轨，避免导航整体消失 */}
+      <TagSidebar
+        TEMPLATE_TAGS={TEMPLATE_TAGS}
+        availableTags={availableTags}
+        selectedTags={selectedTags}
+        selectedLibrary={selectedLibrary}
+        selectedType={selectedType}
+        setSelectedTags={setSelectedTags}
+        setSelectedLibrary={setSelectedLibrary}
+        setSelectedType={setSelectedType}
+        isSortMenuOpen={isSortMenuOpen}
+        setIsSortMenuOpen={setIsSortMenuOpen}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        setRandomSeed={setRandomSeed}
+        handleRefresh={handleRefreshSystemData}
+        t={t}
+        activeTab="home"
+        showTopControls={isEmbedded}
+        isDarkMode={isDarkMode}
+        language={language}
+        topOffset={0}
+      />
 
       {/* Poster Content Container */}
       <div 

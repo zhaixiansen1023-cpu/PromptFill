@@ -14,6 +14,13 @@ export const RootLayout = ({ children }) => {
   const { isDarkMode, language, t, themeMode, setThemeMode, setLanguage, appVersion } = useRootContext();
   
   const [isMobileDevice, setIsMobileDevice] = useState(isMobile());
+  const isEmbedded = window.self !== window.top;
+  const isStandaloneScrollablePage = location.pathname === '/privacy';
+  const shouldLockViewport = !isEmbedded && !isMobileDevice && !isStandaloneScrollablePage;
+  const shouldShowRootSidebar = !isMobileDevice && !isEmbedded;
+  const shellHeightClass = shouldLockViewport
+    ? 'h-screen h-[100dvh] max-h-[100dvh]'
+    : 'min-h-screen min-h-[100dvh] h-full';
 
   // 监听窗口大小变化
   useEffect(() => {
@@ -58,12 +65,26 @@ export const RootLayout = ({ children }) => {
     meta.setAttribute('content', themeColor);
   }, [isDarkMode]);
 
-  // 检测是否为嵌入模式
-  const isEmbedded = window.self !== window.top;
+  // 桌面独立页使用固定视口高度，确保主页/详情页只在内部容器滚动。
+  useEffect(() => {
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = documentElement.style.overflow;
+
+    if (shouldLockViewport) {
+      body.style.overflow = 'hidden';
+      documentElement.style.overflow = 'hidden';
+    }
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [shouldLockViewport]);
 
   return (
     <div 
-      className={`relative flex ${isEmbedded ? 'flex-col' : 'flex-row'} h-screen h-[100dvh] w-screen overflow-hidden p-0 md:p-4 select-none transition-colors duration-300 ${
+      className={`relative flex ${isEmbedded ? 'flex-col' : 'flex-row'} ${shellHeightClass} w-full max-w-full overflow-hidden p-0 md:py-6 ${isEmbedded ? 'md:pl-28 md:pr-10' : 'md:px-10'} select-none transition-colors duration-300 ${
         isDarkMode ? 'dark-mode dark-gradient-bg' : 'mesh-gradient-bg'
       }`}
     >
@@ -100,7 +121,7 @@ export const RootLayout = ({ children }) => {
           <div className="mesh-grain-overlay" />
         </div>
       )}
-      {!isMobileDevice && (
+      {shouldShowRootSidebar && (
         <Sidebar
           activeTab={activeTab}
           isSortMenuOpen={isSortMenuOpen}

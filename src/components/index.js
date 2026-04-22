@@ -17,6 +17,7 @@ export { MobileSettingsView } from './MobileSettingsView';
 export { SettingsView } from './SettingsView';
 export { Sidebar } from './Sidebar';
 export { TagSidebar } from './TagSidebar';
+export { EmbeddedToolbar } from './EmbeddedToolbar';
 export { Tooltip } from './Tooltip';
 
 export { RootLayout } from './RootLayout';

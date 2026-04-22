@@ -28,7 +28,7 @@ import { computeLocalOptionsFromContent } from './hooks/useLinkageGroups';
 import { useRootContext } from './context/RootContext';
 
 // ====== 导入 UI 组件 ======
-import { Variable, VisualEditor, PremiumButton, EditorToolbar, Lightbox, TemplatePreview, TemplateEditor, TemplatesSidebar, BanksSidebar, InsertVariableModal, AddBankModal, DiscoveryView, MobileSettingsView, SettingsView, Sidebar, TagSidebar } from './components';
+import { Variable, VisualEditor, PremiumButton, EditorToolbar, Lightbox, TemplatePreview, TemplateEditor, TemplatesSidebar, BanksSidebar, InsertVariableModal, AddBankModal, DiscoveryView, MobileSettingsView, SettingsView, Sidebar, TagSidebar, EmbeddedToolbar } from './components';
 import { ImagePreviewModal, SourceAssetModal, AnimatedSlogan, MobileAnimatedSlogan } from './components/preview';
 import { MobileBottomNav } from './components/mobile';
 import { ShareOptionsModal, CopySuccessModal, ImportTokenModal, ShareImportModal, CategoryManagerModal, ConfirmModal, AddTemplateTypeModal, VideoSubTypeModal } from './components/modals';
@@ -3360,10 +3360,11 @@ ${tagsHint ? `\n${tagsHint}` : ''}
     WebkitBackdropFilter: 'blur(32px)',
     boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 2px 24px rgba(180, 120, 80, 0.08)',
   };
+  const embeddedDesktopTopOffsetClass = isEmbedded && !isMobileDevice ? 'pt-3' : '';
 
   if (!isTemplatesLoaded || !isBanksLoaded || !isCategoriesLoaded || !isDefaultsLoaded) {
     return (
-      <div className={`flex items-center justify-center h-screen w-screen ${isDarkMode ? 'bg-[#181716] text-white' : 'bg-[#FAF5F1] text-gray-800'}`}>
+      <div className={`flex items-center justify-center min-h-screen min-h-[100dvh] w-full ${isDarkMode ? 'bg-[#181716] text-white' : 'bg-[#FAF5F1] text-gray-800'}`}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-sm font-medium opacity-70">加载中...</p>
@@ -3391,7 +3392,7 @@ ${tagsHint ? `\n${tagsHint}` : ''}
       
       {/* 主视图区域 */}
       <div
-        className="flex-1 h-full relative flex overflow-hidden"
+        className="flex-1 min-h-0 h-full w-full relative flex overflow-hidden"
         onTouchMove={(e) => touchDraggingVar && onTouchDragMove(e.touches[0].clientX, e.touches[0].clientY)}
         onTouchEnd={(e) => touchDraggingVar && onTouchDragEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY)}
       >
@@ -3420,132 +3421,148 @@ ${tagsHint ? `\n${tagsHint}` : ''}
             lastICloudSyncError={lastICloudSyncError}
             />
           ) : (
-            <SettingsView
-              language={language}
-              setLanguage={setLanguage}
-              storageMode={storageMode}
-              setStorageMode={setStorageMode}
-              directoryHandle={directoryHandle}
-              handleImportTemplate={handleImportTemplate}
-              handleExportAllTemplates={openExportModal}
-              handleResetSystemData={handleRefreshSystemData}
-              handleClearAllData={requestClearAllData}
-              handleSelectDirectory={handleSelectDirectory}
-              handleSwitchToLocalStorage={handleSwitchToLocalStorage}
-              SYSTEM_DATA_VERSION={SYSTEM_DATA_VERSION}
-              t={t}
-              globalContainerStyle={globalContainerStyle}
-              isDarkMode={isDarkMode}
-              themeMode={themeMode}
-              setThemeMode={setThemeMode}
+            <div className={`flex-1 min-h-0 ${isEmbedded ? 'px-4 py-0' : ''}`}>
+              <div className="flex h-full gap-2 lg:gap-4 overflow-hidden">
+                <SettingsView
+                  language={language}
+                  setLanguage={setLanguage}
+                  storageMode={storageMode}
+                  setStorageMode={setStorageMode}
+                  directoryHandle={directoryHandle}
+                  handleImportTemplate={handleImportTemplate}
+                  handleExportAllTemplates={openExportModal}
+                  handleResetSystemData={handleRefreshSystemData}
+                  handleClearAllData={requestClearAllData}
+                  handleSelectDirectory={handleSelectDirectory}
+                  handleSwitchToLocalStorage={handleSwitchToLocalStorage}
+                  SYSTEM_DATA_VERSION={SYSTEM_DATA_VERSION}
+                  t={t}
+                  globalContainerStyle={globalContainerStyle}
+                  isDarkMode={isDarkMode}
+                  themeMode={themeMode}
+                  setThemeMode={setThemeMode}
                   iCloudEnabled={iCloudEnabled}
                   setICloudEnabled={setICloudEnabled}
                   lastICloudSyncAt={lastICloudSyncAt}
                   lastICloudSyncError={lastICloudSyncError}
-            />
+                />
+              </div>
+            </div>
           )
         ) : showDiscoveryOverlay ? (
-          <DiscoveryView
-            filteredTemplates={filteredTemplates}
-            setActiveTemplateId={handleSetActiveTemplateId}
-            setDiscoveryView={handleSetDiscoveryView}
-            setZoomedImage={setZoomedImage}
-            posterScrollRef={posterScrollRef}
-            setIsPosterAutoScrollPaused={setIsPosterAutoScrollPaused}
-            currentMasonryStyle={MASONRY_STYLES[masonryStyleKey]}
-            masonryStyleKey={masonryStyleKey}
-            AnimatedSlogan={isMobileDevice ? MobileAnimatedSlogan : AnimatedSlogan}
-            isSloganActive={!zoomedImage}
-            t={t}
-            TAG_STYLES={TAG_STYLES}
-            displayTag={displayTag}
-            handleRefreshSystemData={handleRefreshSystemData}
-            language={language}
-            setLanguage={setLanguage}
-            isDarkMode={isDarkMode}
-            isSortMenuOpen={isSortMenuOpen}
-            setIsSortMenuOpen={setIsSortMenuOpen}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-            setRandomSeed={setRandomSeed}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            globalContainerStyle={globalContainerStyle}
-            themeMode={themeMode}
-            setThemeMode={setThemeMode}
-            templates={templates}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            selectedLibrary={selectedLibrary}
-            setSelectedLibrary={setSelectedLibrary}
-            selectedType={selectedType}
-            setSelectedType={setSelectedType}
-            handleAddTemplate={handleAddTemplate}
-            TEMPLATE_TAGS={TEMPLATE_TAGS}
-            availableTags={availableTags}
-          />
+          <div className={`flex-1 min-h-0 flex overflow-hidden ${isEmbedded ? 'px-4 py-0' : ''}`}>
+            <DiscoveryView
+              filteredTemplates={filteredTemplates}
+              setActiveTemplateId={handleSetActiveTemplateId}
+              setDiscoveryView={handleSetDiscoveryView}
+              setZoomedImage={setZoomedImage}
+              posterScrollRef={posterScrollRef}
+              setIsPosterAutoScrollPaused={setIsPosterAutoScrollPaused}
+              currentMasonryStyle={MASONRY_STYLES[masonryStyleKey]}
+              masonryStyleKey={masonryStyleKey}
+              AnimatedSlogan={isMobileDevice ? MobileAnimatedSlogan : AnimatedSlogan}
+              isSloganActive={!zoomedImage}
+              t={t}
+              TAG_STYLES={TAG_STYLES}
+              displayTag={displayTag}
+              handleRefreshSystemData={handleRefreshSystemData}
+              language={language}
+              setLanguage={setLanguage}
+              isDarkMode={isDarkMode}
+              isSortMenuOpen={isSortMenuOpen}
+              setIsSortMenuOpen={setIsSortMenuOpen}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              setRandomSeed={setRandomSeed}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              globalContainerStyle={globalContainerStyle}
+              themeMode={themeMode}
+              setThemeMode={setThemeMode}
+              templates={templates}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+              selectedLibrary={selectedLibrary}
+              setSelectedLibrary={setSelectedLibrary}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              handleAddTemplate={handleAddTemplate}
+              TEMPLATE_TAGS={TEMPLATE_TAGS}
+              availableTags={availableTags}
+            />
+          </div>
         ) : (
-          <div className="flex-1 h-full flex gap-2 lg:gap-4 overflow-hidden">
-            {/* Tag Sidebar - 仅在桌面端且面板可见时显示 */}
-            {!isMobileDevice && isTagSidebarVisible && (
-              <TagSidebar
-                TEMPLATE_TAGS={TEMPLATE_TAGS}
-                availableTags={availableTags}
-                selectedTags={selectedTags}
-                selectedLibrary={selectedLibrary}
-                selectedType={selectedType}
-                setSelectedTags={setSelectedTags}
-                setSelectedLibrary={setSelectedLibrary}
-                setSelectedType={setSelectedType}
-                isDarkMode={isDarkMode}
-                language={language}
-                topOffset={isEmbedded ? 44 : 0}
-              />
-            )}
+          <div className={`flex-1 min-h-0 ${isEmbedded ? 'px-4 py-0' : ''}`}>
+            <div className="flex h-full gap-2 lg:gap-4 overflow-hidden">
+              {/* Tag Sidebar - 桌面端常驻，隐藏时收拢为窄轨，避免控制按钮消失 */}
+              {!isMobileDevice && (
+                <TagSidebar
+                  TEMPLATE_TAGS={TEMPLATE_TAGS}
+                  availableTags={availableTags}
+                  selectedTags={selectedTags}
+                  selectedLibrary={selectedLibrary}
+                  selectedType={selectedType}
+                  setSelectedTags={setSelectedTags}
+                  setSelectedLibrary={setSelectedLibrary}
+                  setSelectedType={setSelectedType}
+                  isSortMenuOpen={isSortMenuOpen}
+                  setIsSortMenuOpen={setIsSortMenuOpen}
+                  sortOrder={sortOrder}
+                  setSortOrder={setSortOrder}
+                  setRandomSeed={setRandomSeed}
+                  handleRefresh={handleRefreshSystemData}
+                  t={t}
+                  activeTab="detail"
+                  showTopControls={isEmbedded}
+                  isDarkMode={isDarkMode}
+                  language={language}
+                  topOffset={0}
+                />
+              )}
 
-            <div className={`transition-all duration-300 ease-out ${!isMobileDevice && !isTemplatesSidebarVisible ? 'hidden' : ''}`}>
-              <TemplatesSidebar
-                mobileTab={mobileTab}
-                isTemplatesDrawerOpen={isTemplatesDrawerOpen}
-                setIsTemplatesDrawerOpen={setIsTemplatesDrawerOpen}
-                setDiscoveryView={handleSetDiscoveryView}
-                activeTemplateId={activeTemplateId}
-                setActiveTemplateId={handleSetActiveTemplateId}
-                filteredTemplates={filteredTemplates}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                handleRefreshSystemData={handleRefreshSystemData}
-                language={language}
-                setLanguage={setLanguage}
-                isDarkMode={isDarkMode}
-                t={t}
-                isSortMenuOpen={isSortMenuOpen}
-                setIsSortMenuOpen={setIsSortMenuOpen}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
-                setRandomSeed={setRandomSeed}
-                handleResetTemplate={requestResetTemplate}
-                startRenamingTemplate={startRenamingTemplate}
-                handleDuplicateTemplate={handleDuplicateTemplate}
-                handleExportTemplate={handleExportTemplate}
-                handleDeleteTemplate={requestDeleteTemplate}
-                handleAddTemplate={handleAddTemplate}
-                handleManualTokenImport={handleManualTokenImport}
-                setShowImportTokenModal={setShowImportTokenModal}
-                INITIAL_TEMPLATES_CONFIG={INITIAL_TEMPLATES_CONFIG}
-                editingTemplateNameId={editingTemplateNameId}
-                tempTemplateName={tempTemplateName}
-                setTempTemplateName={setTempTemplateName}
-                tempTemplateAuthor={tempTemplateAuthor}
-                setTempTemplateAuthor={setTempTemplateAuthor}
-                saveTemplateName={saveTemplateName}
-                setEditingTemplateNameId={setEditingTemplateNameId}
-                globalContainerStyle={globalContainerStyle}
-              />
-            </div>
+              <div className={`transition-all duration-300 ease-out ${!isMobileDevice && !isTemplatesSidebarVisible ? 'hidden' : ''}`}>
+                <TemplatesSidebar
+                  mobileTab={mobileTab}
+                  isTemplatesDrawerOpen={isTemplatesDrawerOpen}
+                  setIsTemplatesDrawerOpen={setIsTemplatesDrawerOpen}
+                  setDiscoveryView={handleSetDiscoveryView}
+                  activeTemplateId={activeTemplateId}
+                  setActiveTemplateId={handleSetActiveTemplateId}
+                  filteredTemplates={filteredTemplates}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  handleRefreshSystemData={handleRefreshSystemData}
+                  language={language}
+                  setLanguage={setLanguage}
+                  isDarkMode={isDarkMode}
+                  t={t}
+                  isSortMenuOpen={isSortMenuOpen}
+                  setIsSortMenuOpen={setIsSortMenuOpen}
+                  sortOrder={sortOrder}
+                  setSortOrder={setSortOrder}
+                  setRandomSeed={setRandomSeed}
+                  handleResetTemplate={requestResetTemplate}
+                  startRenamingTemplate={startRenamingTemplate}
+                  handleDuplicateTemplate={handleDuplicateTemplate}
+                  handleExportTemplate={handleExportTemplate}
+                  handleDeleteTemplate={requestDeleteTemplate}
+                  handleAddTemplate={handleAddTemplate}
+                  handleManualTokenImport={handleManualTokenImport}
+                  setShowImportTokenModal={setShowImportTokenModal}
+                  INITIAL_TEMPLATES_CONFIG={INITIAL_TEMPLATES_CONFIG}
+                  editingTemplateNameId={editingTemplateNameId}
+                  tempTemplateName={tempTemplateName}
+                  setTempTemplateName={setTempTemplateName}
+                  tempTemplateAuthor={tempTemplateAuthor}
+                  setTempTemplateAuthor={setTempTemplateAuthor}
+                  saveTemplateName={saveTemplateName}
+                  setEditingTemplateNameId={setEditingTemplateNameId}
+                  globalContainerStyle={globalContainerStyle}
+                />
+              </div>
 
-            {/* --- 2. Main Editor (Middle) --- */}
-            <TemplateEditor
+              {/* --- 2. Main Editor (Middle) --- */}
+              <TemplateEditor
               // ===== 模板数据 =====
               activeTemplate={activeTemplate}
               templates={templates}
@@ -3646,9 +3663,9 @@ ${tagsHint ? `\n${tagsHint}` : ''}
               splitDurationMs={splitSnapshot?.templateId === activeTemplateId ? (splitSnapshot?.splitDurationMs ?? null) : null}
               onResetClick={() => setIsSplitResetModalOpen(true)}
               updateTemplateProperty={updateTemplateProperty}
-              setIsTemplatesDrawerOpen={setIsTemplatesDrawerOpen}
-              setIsBanksDrawerOpen={setIsBanksDrawerOpen}
-            />
+                setIsTemplatesDrawerOpen={setIsTemplatesDrawerOpen}
+                setIsBanksDrawerOpen={setIsBanksDrawerOpen}
+              />
 
             {/* Image/Video URL Input Modal - 保持在 TemplateEditor 外部 */}
             {showImageUrlInput && (
@@ -3720,30 +3737,31 @@ ${tagsHint ? `\n${tagsHint}` : ''}
               </div>
             )}
 
-            <div className={`transition-all duration-300 ease-out ${!isMobileDevice && !isBanksSidebarVisible ? 'hidden' : ''}`}>
-              <BanksSidebar
-                mobileTab={mobileTab}
-                isBanksDrawerOpen={isBanksDrawerOpen}
-                setIsBanksDrawerOpen={setIsBanksDrawerOpen}
-                bankSidebarWidth={bankSidebarWidth}
-                sidebarRef={sidebarRef}
-                startResizing={startResizing}
-                setIsCategoryManagerOpen={setIsCategoryManagerOpen}
-                categories={categories}
-                banks={banks}
-                insertVariableToTemplate={insertVariableToTemplate}
-                handleDeleteOption={handleDeleteOption}
-                handleAddOption={handleAddOption}
-                handleUpdateOption={handleUpdateOption}
-                handleDeleteBank={handleDeleteBank}
-                handleUpdateBankCategory={handleUpdateBankCategory}
-                handleStartAddBank={handleStartAddBank}
-                t={t}
-                language={templateLanguage}
-                isDarkMode={isDarkMode}
-                onTouchDragStart={onTouchDragStart}
-                globalContainerStyle={globalContainerStyle}
-              />
+              <div className={`transition-all duration-300 ease-out ${!isMobileDevice && !isBanksSidebarVisible ? 'hidden' : ''}`}>
+                <BanksSidebar
+                  mobileTab={mobileTab}
+                  isBanksDrawerOpen={isBanksDrawerOpen}
+                  setIsBanksDrawerOpen={setIsBanksDrawerOpen}
+                  bankSidebarWidth={bankSidebarWidth}
+                  sidebarRef={sidebarRef}
+                  startResizing={startResizing}
+                  setIsCategoryManagerOpen={setIsCategoryManagerOpen}
+                  categories={categories}
+                  banks={banks}
+                  insertVariableToTemplate={insertVariableToTemplate}
+                  handleDeleteOption={handleDeleteOption}
+                  handleAddOption={handleAddOption}
+                  handleUpdateOption={handleUpdateOption}
+                  handleDeleteBank={handleDeleteBank}
+                  handleUpdateBankCategory={handleUpdateBankCategory}
+                  handleStartAddBank={handleStartAddBank}
+                  t={t}
+                  language={templateLanguage}
+                  isDarkMode={isDarkMode}
+                  onTouchDragStart={onTouchDragStart}
+                  globalContainerStyle={globalContainerStyle}
+                />
+              </div>
             </div>
           </div>
         )}
