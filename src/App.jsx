@@ -4053,8 +4053,6 @@ ${tagsHint ? `\n${tagsHint}` : ''}
       <CopySuccessModal
         isOpen={isCopySuccessModalOpen}
         onClose={() => setIsCopySuccessModalOpen(false)}
-        bestModel={activeTemplate?.bestModel}
-        templateType={activeTemplate?.type}
         isDarkMode={isDarkMode}
         language={language}
       />
