@@ -37,7 +37,10 @@ export const isMobile = () => typeof window !== 'undefined' && window.innerWidth
  * @returns {Promise<Response>}
  */
 export const smartFetch = async (url, options = {}) => {
-  if (isTauri()) {
+  // Tauri iOS: tauri-plugin-http ≥2.5.0 存在 response body 读取挂起的已知 Bug,
+  // 而 Info.ios.plist 已开启 NSAllowsArbitraryLoads，原生 fetch 可直接访问 HTTPS。
+  // 因此 iOS 端跳过插件，直接走 WKWebView 原生 fetch。
+  if (isTauri() && !isIOS()) {
     try {
       const { fetch: tauriFetch } = await import('@tauri-apps/plugin-http');
       return await tauriFetch(url, { ...options, method: options.method || 'GET' });

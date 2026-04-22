@@ -303,7 +303,12 @@ export const EditorToolbar = ({
   currentGroupId = null,
   onSetGroup,
   onRemoveGroup,
-  language = 'cn'
+  language = 'cn',
+  showLanguageToggle = false,
+  templateLanguage = 'cn',
+  onSetTemplateLanguage,
+  supportsChinese = true,
+  supportsEnglish = true,
 }) => {
   const [isGroupsExpanded, setIsGroupsExpanded] = useState(false);
   const [isDebugPanelOpen, setIsDebugPanelOpen] = useState(false);
@@ -335,202 +340,144 @@ export const EditorToolbar = ({
         onClose={() => setIsDebugPanelOpen(false)}
       />
     )}
-    <div className={`flex flex-col border-b backdrop-blur-md flex-shrink-0 z-20 ${isDarkMode ? 'border-white/5 bg-white/5 text-gray-300' : 'border-[#D8C8B8]/60 bg-[#F0E4D8]/70'}`}>
-      {/* 第一行：撤销/重做 & 插入按钮 */}
-      <div className="h-14 flex items-center justify-between px-4">
-        <div className="flex items-center gap-3">
-          {/* Undo/Redo */}
-          <div className="flex items-center gap-2">
-            <PremiumButton 
-              onClick={onUndo} 
-              disabled={!canUndo || isSmartSplitLoading} 
-              title={t('undo') || "撤消"} 
-              icon={Undo} 
-              isDarkMode={isDarkMode}
-              className="!p-1" 
-            />
-            <PremiumButton 
-              onClick={onRedo} 
-              disabled={!canRedo || isSmartSplitLoading} 
-              title={t('redo') || "重做"} 
-              icon={Redo} 
-              isDarkMode={isDarkMode}
-              className="!p-1" 
-            />
-          </div>
+    <div className={`flex flex-col border-b backdrop-blur-md flex-shrink-0 z-20 py-1.5 gap-1 ${isDarkMode ? 'border-white/5 bg-white/5 text-gray-300' : 'border-[#D8C8B8]/60 bg-[#F0E4D8]/70'}`}>
+      {/* 第一行：撤销/重做（左） & 插入（右） */}
+      <div className="flex items-center justify-between px-4">
+        <div className="flex items-center gap-2">
+          <PremiumButton onClick={onUndo} disabled={!canUndo || isSmartSplitLoading} title={t('undo') || "撤消"} icon={Undo} isDarkMode={isDarkMode} className="!p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2" />
+          <PremiumButton onClick={onRedo} disabled={!canRedo || isSmartSplitLoading} title={t('redo') || "重做"} icon={Redo} isDarkMode={isDarkMode} className="!p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2" />
+        </div>
+        <PremiumButton onClick={onInsertClick} icon={Plus} isDarkMode={isDarkMode} disabled={isSmartSplitLoading}
+          className="!p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2.5 [&_.premium-button-inner]:!text-[12px] [&_.premium-button-inner]:!gap-1.5">
+          {t('insert')}
+        </PremiumButton>
+      </div>
 
-          <div className={`h-6 w-px ${isDarkMode ? 'bg-white/10' : 'bg-gray-300'}`} />
-
-          {/* 移动端折叠触发器 */}
-          {isMobile && (
-            <button 
-              onClick={() => setIsGroupsExpanded(!isGroupsExpanded)}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all ${isDarkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-600'}`}
-            >
-              <Link size={14} className={currentGroupId ? 'text-orange-500' : ''} />
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                {currentGroupId ? `${t('link_group') || '联动组'} ${currentGroupId}` : (t('link_group') || '联动组')}
-              </span>
-              {isGroupsExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-            </button>
+      {/* 第二行：语言切换（左）& 分组 + 智能拆分 + 调试（右） */}
+      <div className="flex items-center justify-between px-4">
+        <div className="flex items-center">
+          {showLanguageToggle && (
+            <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} shrink-0 scale-[0.85] origin-left`}>
+              <button onClick={() => supportsChinese && onSetTemplateLanguage?.('cn')}
+                className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${templateLanguage === 'cn' ? 'is-active' : ''} !px-2`}>CN</button>
+              <button onClick={() => supportsEnglish && onSetTemplateLanguage?.('en')}
+                className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${templateLanguage === 'en' ? 'is-active' : ''} !px-2`}>EN</button>
+            </div>
           )}
 
-          {/* 桌面端显示联动组标签 */}
+          {/* 桌面端联动组数字面板 */}
           {!isMobile && (
-            <div className="flex items-center gap-2">
-              <span className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-                {t('link_group') || '联动组'}:
-              </span>
-              <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'}`}>
-                {[1, 2, 3, 4, 5].map(num => (
-                  <button
-                    key={num}
-                    onClick={() => onSetGroup(num)}
-                    disabled={!cursorInVariable}
-                    className={`
-                      premium-toggle-item ${isDarkMode ? 'dark' : 'light'}
-                      !px-3 !py-1 min-w-[32px]
-                      ${currentGroupId === num.toString() ? 'is-active' : ''}
-                      ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}
-                    `}
-                    title={cursorInVariable ? `${t('set_group') || '设置为联动组'} ${num}` : t('place_cursor_in_variable') || '请将光标置于变量内'}
-                  >
-                    {num}
-                  </button>
-                ))}
-                
-                {currentGroupId && <div className={`w-px h-4 self-center mx-1 ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`} />}
-
-                {currentGroupId && (
-                  <button
-                    onClick={onRemoveGroup}
-                    disabled={!cursorInVariable}
-                    className={`
-                      premium-toggle-item ${isDarkMode ? 'dark' : 'light'}
-                      !px-3 !py-1 text-red-500 hover:text-red-600 hover:bg-red-500/10
-                      ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}
-                    `}
-                    title={t('remove_group') || "解除关联"}
-                  >
-                    <Unlink size={14} strokeWidth={2.5} />
-                  </button>
-                )}
+            <>
+              {showLanguageToggle && <div className={`h-5 w-px mx-2 ${isDarkMode ? 'bg-white/10' : 'bg-gray-300'}`} />}
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                  {language === 'cn' ? '分组' : 'Group'}:
+                </span>
+                <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'}`}>
+                  {[1, 2, 3, 4, 5].map(num => (
+                    <button
+                      key={num}
+                      onClick={() => onSetGroup(num)}
+                      disabled={!cursorInVariable}
+                      className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} !px-3 !py-1 min-w-[32px]
+                        ${currentGroupId === num.toString() ? 'is-active' : ''}
+                        ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}`}
+                      title={cursorInVariable ? `${t('set_group') || '设置为联动组'} ${num}` : t('place_cursor_in_variable') || '请将光标置于变量内'}
+                    >{num}</button>
+                  ))}
+                  {currentGroupId && <div className={`w-px h-4 self-center mx-1 ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`} />}
+                  {currentGroupId && (
+                    <button onClick={onRemoveGroup} disabled={!cursorInVariable}
+                      className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} !px-3 !py-1 text-red-500 hover:text-red-600 hover:bg-red-500/10 ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}`}
+                      title={t('remove_group') || "解除关联"}>
+                      <Unlink size={14} strokeWidth={2.5} />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
 
-        {/* Right: AI Smart Split & Insert */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* 移动端分组按钮 */}
+          {isMobile && (
+            <PremiumButton
+              onClick={() => setIsGroupsExpanded(!isGroupsExpanded)}
+              icon={Link}
+              isDarkMode={isDarkMode}
+              className={`!p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2.5 [&_.premium-button-inner]:!text-[12px] [&_.premium-button-inner]:!gap-1.5 ${currentGroupId ? '!text-orange-500' : ''}`}
+            >
+              {currentGroupId
+                ? `${language === 'cn' ? '分组' : 'Group'} ${currentGroupId}`
+                : (language === 'cn' ? '分组' : 'Group')}
+            </PremiumButton>
+          )}
+
           {AI_SMART_SPLIT_ENABLED && (
-            <div className="flex items-center gap-1">
-              {/* 智能拆分按钮（始终显示） */}
+            <>
               <PremiumButton
                 onClick={onSmartSplitClick}
                 disabled={isSmartSplitLoading}
                 isDarkMode={isDarkMode}
-                className={`rainbow ${isSmartSplitLoading ? 'opacity-80' : ''}`}
+                className={`rainbow !p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2.5 [&_.premium-button-inner]:!text-[12px] [&_.premium-button-inner]:!gap-1 ${isSmartSplitLoading ? 'opacity-80' : ''}`}
                 title={language === 'cn' ? '一键润色与智能拆分' : 'Smart Polish & Split'}
               >
-                <span className={`flex items-center gap-1.5 ${isSmartSplitLoading ? 'animate-pulse' : ''}`}>
+                <span className={`flex items-center gap-1 ${isSmartSplitLoading ? 'animate-pulse' : ''}`}>
                   {isSmartSplitLoading
-                    ? (language === 'cn' ? '正在智能拆分...' : 'Splitting...')
-                    : (language === 'cn' ? '智能拆分' : 'Smart Split')}
-                  <span className="text-[9px] font-medium text-orange-500/80">Beta</span>
+                    ? (language === 'cn' ? '拆分中...' : 'Splitting...')
+                    : (language === 'cn' ? '智能拆分' : 'Split')}
                 </span>
               </PremiumButton>
 
-              {/* 重置按钮：仅在拆分后有快照时显示 */}
               {hasSplitSnapshot && !isSmartSplitLoading && (
-                <div className="flex items-center gap-1.5">
-                  <PremiumButton
-                    onClick={onResetClick}
-                    isDarkMode={isDarkMode}
-                    className="!h-[34px] !rounded-xl"
-                    title={language === 'cn' ? '查看拆分前后对比，可选择还原' : 'Compare before/after split and optionally restore'}
-                  >
-                    <span className="flex items-center gap-1.5 px-0.5">
-                      <RotateCcw size={12} strokeWidth={2.5} />
-                      {language === 'cn' ? '重置' : 'Reset'}
-                    </span>
-                  </PremiumButton>
-                  {splitDurationMs != null && (
-                    <span
-                      className={`text-[10px] font-mono tabular-nums ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}
-                      title={language === 'cn' ? '上次拆分耗时' : 'Last split duration'}
-                    >
-                      {splitDurationMs >= 1000
-                        ? `${(splitDurationMs / 1000).toFixed(1)}s`
-                        : `${splitDurationMs}ms`}
-                    </span>
-                  )}
-                </div>
+                <PremiumButton onClick={onResetClick} isDarkMode={isDarkMode}
+                  className="!p-0.5 [&_.premium-button-inner]:!min-h-[28px] [&_.premium-button-inner]:!px-2.5 [&_.premium-button-inner]:!text-[12px] [&_.premium-button-inner]:!gap-1"
+                  title={language === 'cn' ? '查看拆分前后对比' : 'Compare before/after split'}>
+                  <span className="flex items-center gap-1">
+                    <RotateCcw size={12} strokeWidth={2.5} />
+                    {language === 'cn' ? '重置' : 'Reset'}
+                  </span>
+                </PremiumButton>
               )}
-
-              {/* 调试按钮 - 仅开发环境可见，正式发版前移除 */}
-              {DEBUG_MODE_ENABLED && (
-                <button
-                  onClick={handleOpenDebug}
-                  disabled={isSmartSplitLoading}
-                  title={language === 'cn' ? '调试：在前端直接编辑系统提示词并测试' : 'Debug: Edit system prompt directly in frontend'}
-                  className={`
-                    p-1.5 rounded-lg border transition-all
-                    ${isSmartSplitLoading ? 'opacity-30 cursor-not-allowed' : ''}
-                    ${isDarkMode
-                      ? 'border-orange-500/20 text-orange-500/60 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/40'
-                      : 'border-orange-300/50 text-orange-400/70 hover:text-orange-500 hover:bg-orange-50 hover:border-orange-300'}
-                  `}
-                >
-                  <Bug size={13} />
-                </button>
-              )}
-            </div>
+            </>
           )}
 
-          <PremiumButton 
-            onClick={onInsertClick} 
-            icon={Plus} 
-            isDarkMode={isDarkMode}
-            disabled={isSmartSplitLoading}
-          >
-            {t('insert')}
-          </PremiumButton>
+          {DEBUG_MODE_ENABLED && (
+            <button onClick={handleOpenDebug} disabled={isSmartSplitLoading}
+              title={language === 'cn' ? '调试' : 'Debug'}
+              className={`p-1 rounded-lg border transition-all
+                ${isSmartSplitLoading ? 'opacity-30 cursor-not-allowed' : ''}
+                ${isDarkMode
+                  ? 'border-orange-500/20 text-orange-500/60 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/40'
+                  : 'border-orange-300/50 text-orange-400/70 hover:text-orange-500 hover:bg-orange-50 hover:border-orange-300'}`}>
+              <Bug size={12} />
+            </button>
+          )}
         </div>
       </div>
 
       {/* 移动端折叠面板：联动组选择 */}
       {isMobile && isGroupsExpanded && (
-        <div className={`px-4 py-4 border-t animate-in slide-in-from-top-1 duration-200 ${isDarkMode ? 'border-white/5 bg-black/20' : 'border-[#D8C8B8]/60 bg-[#F0E4D8]/60'}`}>
-          <div className="flex flex-col gap-4">
+        <div className={`px-4 py-3 border-t animate-in slide-in-from-top-1 duration-200 ${isDarkMode ? 'border-white/5 bg-black/20' : 'border-[#D8C8B8]/60 bg-[#F0E4D8]/60'}`}>
+          <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className={`text-[10px] font-black uppercase tracking-widest px-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 {t('link_group_desc') || '设置选中变量的联动编号'}
               </span>
               {currentGroupId && (
-                <button
-                  onClick={onRemoveGroup}
-                  disabled={!cursorInVariable}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-red-500 text-[10px] font-bold uppercase tracking-wider hover:bg-red-500/10 rounded-xl transition-all border border-red-500/20"
-                >
+                <button onClick={onRemoveGroup} disabled={!cursorInVariable}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-red-500 text-[10px] font-bold uppercase tracking-wider hover:bg-red-500/10 rounded-xl transition-all border border-red-500/20">
                   <Unlink size={12} /> {t('remove_group') || "解除关联"}
                 </button>
               )}
             </div>
             <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} !w-full !justify-around !p-1.5`}>
               {[1, 2, 3, 4, 5].map(num => (
-                <button
-                  key={num}
-                  onClick={() => onSetGroup(num)}
-                  disabled={!cursorInVariable}
-                  className={`
-                    premium-toggle-item ${isDarkMode ? 'dark' : 'light'}
-                    flex-1 !py-2.5 !text-sm
+                <button key={num} onClick={() => onSetGroup(num)} disabled={!cursorInVariable}
+                  className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} flex-1 !py-2.5 !text-sm
                     ${currentGroupId === num.toString() ? 'is-active' : ''}
-                    ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}
-                  `}
-                >
-                  {num}
-                </button>
+                    ${!cursorInVariable ? 'opacity-30 cursor-not-allowed' : ''}`}>{num}</button>
               ))}
             </div>
             {!cursorInVariable && (

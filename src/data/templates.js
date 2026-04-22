@@ -40,7 +40,7 @@
 /**
  * 模板系统版本号，每次更新 templates.js 或 banks.js 时请更新此版本号
  */
-export const SYSTEM_DATA_VERSION = "1.1.0";
+export const SYSTEM_DATA_VERSION = "1.1.3";
 
 /**
  * 分享功能正式环境域名（扫码导入需使用公网可访问地址）
@@ -51,6 +51,11 @@ export const PUBLIC_SHARE_URL = "https://aipromptfill.com";
 export const TEMPLATE_COMIC_PAGE = {
   cn: `单页动态漫画，{{comic_subject: 两个潜行的忍者}}在{{comic_time: 夜晚}}潜入{{comic_location: 古日本寺庙}}，多面板布局，粗黑色面板边框，白色间隔区：顶部宽幅全景镜头展示月下的寺庙，装饰性的木制宝塔，石灯笼，星空下的樱花树；中间面板：一个忍者用钩索无声地跃过高墙，第二个忍者蹲在深处阴影中避开巡逻守卫的灯笼；底部特写镜头：蒙面者紧张对话，一个忍者扔出手里剑，传统黑色忍者装束配兜帽和武士刀，戏剧性高对比度光照，冷蓝色月光，暖橙色灯笼光晕，粗墨线，半调阴影，排线，最少的对话气泡带日文文字 Shhh…，{{comic_art_style: 传统黑白漫画风格}}`,
   en: `single dynamic comic book page, {{comic_subject: two stealthy ninjas}} infiltrating {{comic_location: ancient Japanese temple}} at {{comic_time: night}}, multi-panel layout, bold black panel borders, white gutters: top wide establishing shot of moonlit temple with ornate wooden pagodas, stone lanterns, cherry blossom trees under starry sky; middle panels: one ninja leaping silently over high wall with grappling hook, second ninja crouching in deep shadow avoiding patrolling guard lanterns; bottom close-up panels: masked faces in tense conversation, one ninja throwing a shuriken, traditional black shinobi outfits with hoods and katanas, dramatic high-contrast lighting, cool blue moonlight, warm orange lantern glow, thick ink lines, halftone shading, crosshatching, minimal speech bubbles with Japanese text Shhh…, {{comic_art_style: traditional black and white manga style}}`
+};
+
+export const TEMPLATE_3D_FURNITURE_PIXAR = {
+  cn: `{{background_color_clean}}背景，{{render_style}}风格的{{interior_design_style}}3D家具，{{furniture_set}}，正面视角，带有正确的三维透视`,
+  en: `{{background_color_clean}} background, {{interior_design_style}} style 3D furniture in {{render_style}} style, {{furniture_set}}, front view with proper 3D perspective`
 };
 
 export const TEMPLATE_CHARACTER_DESIGN_SHEET = {
@@ -177,6 +182,104 @@ A beautiful, detailed illustration of multi-layered wooden art created by laser 
 
 **Specifications:**
 - **Ratio:** {{ratio}}`
+};
+
+export const TEMPLATE_CREATIVE_CONTAINER = {
+  cn: `### 创意容器摄影
+
+透明的750ml玻璃酒瓶，横截面视图，内部展示来自{{landscape_location: 特兰西瓦尼亚葡萄园}}的微观世界景观，{{lighting_time: 清晨阳光}}投下柔和阴影，超写实主义，复杂细节，景深效果，真实玻璃反射，自然窗光，工作室背景。`,
+
+  en: `### Creative Container Photography
+
+Transparent 750ml glass wine bottle, cross-section view, inside showing a miniature world of {{landscape_location: Transylvania vineyard}} landscapes, {{lighting_time: morning sunlight}} casting soft shadows, hyperrealistic, intricate details, depth of field, realistic glass reflections, natural window light, studio background.`
+};
+
+export const TEMPLATE_MUSEUM_INFOGRAPHIC = {
+  cn: `请根据【{{museum_theme}}】自动生成一张"博物馆图鉴式中文拆解信息图"。要求整张图兼具真实写实主视觉、结构拆解、中文标注、材质说明、纹样寓意、色彩含义和核心特征总结。你需要根据【{{museum_theme}}】自动判断最合适的主体对象、服饰体系、器物结构、时代风格、关键部件、材质工艺、颜色方案与版式结构，用户无需再提供其他信息。
+
+**整体风格**：国家博物馆展板 · 历史服饰图鉴 · 文博专题信息图。背景采用米白、绢纸白、浅茶色等纸张质感，整体高级、克制、专业、可收藏。
+
+**版式结构（固定）**：
+- 顶部：中文主标题 + 副标题 + 导语
+- 左侧：结构拆解区，中文引线标注关键部件，并配局部特写
+- 右上：材质 / 工艺 / 质感区，展示真实纹理小样并附说明
+- 右中：纹样 / 色彩 / 寓意区，展示主色板、纹样样本和文化解释
+- 底部：穿着顺序 / 构成流程图 + 核心特征总结
+
+若主题适合人物展示，则以真实人物全身站姿为中央主体；若更适合器物或单体结构，则改为中心主体拆解图，但整体仍保持完整中文信息图形式。**所有文字必须为简体中文**，清晰、规整、可读，不要乱码、错字、英文或拼音。重点突出真实结构、材质差异、文化说明与图鉴气质。
+
+**避免**：海报感、影楼感、电商感、动漫感、cosplay感、乱标注、错结构、糊字、假材质、过度装饰。`
+};
+
+export const TEMPLATE_NINE_GRID_DESIGNERS = {
+  cn: `九宫格图片，展现九位当代知名设计师设计的同一组物体：{{design_item}}，包括设计师头像，设计师对于设计的中文文字解读和作品呈现。排版统一规则。`
+};
+
+export const TEMPLATE_FOUR_PANEL_ADS = {
+  cn: `生成四张并列排布的虚构{{ad_regional_style}}，涵盖多种不同品类，由专业设计师打造的潮流版式。画幅比例 1:1。`,
+  en: `Generate images of four fictional {{ad_regional_style}} in various genres, arranged side by side. In trendy designs made by professional designers. Aspect ratio 1:1`
+};
+
+export const TEMPLATE_GUOCHAO_CITY_POSTER = {
+  cn: `新中式极简风格高端城市海报，9:16 竖版构图，以{{city_name}}为核心主题，画面中心为抽象几何化的该城市标志性塔楼，造型简洁但具有辨识度。
+
+整体采用 S 型流动构图，从下方向上延展，珠江水系被设计为流动的水波纹与传统祥云纹样融合，环绕整个画面形成视觉动线（若城市非临江，则改为该城市代表性水系与祥云纹样融合）。
+
+{{city_name}}地标建筑以「留白 + 线描 + 局部色块」的方式点缀其中：{{city_landmarks}}，传统与现代建筑自然融合，层次递进，远近虚实分明。
+
+风格控制：极简 + 高级 + 东方意境，不杂乱不过度写实。
+
+色彩方案（重点）：高饱和但克制，中国红、青蓝、鎏金为主色，辅以少量暖金高光点缀，形成强烈视觉冲击但不俗艳。
+
+背景：大面积纯净留白或淡宣纸肌理，增强呼吸感与高级感，背景纹理：{{poster_texture_style}}。
+
+细节：祥云与水纹具有轻微浮雕/烫金质感，局部加入微光粒子或流动光线，增强现代感。
+
+光影：柔和渐变光 + 局部高光，突出恢弘大气氛围。
+
+整体风格：国潮高级插画 / 品牌海报级质感 / 8K / 超清细节。`,
+  en: `Premium Neo-Chinese minimalist city poster, 9:16 vertical aspect ratio, centered on {{city_name}} as the core theme, with an abstract geometric iconic tower of the city as the focal point—clean, simple, and recognizable.
+
+Overall S-curved flowing composition extending upward from the bottom; the city's representative water system is rendered as flowing ripples fused with traditional auspicious cloud motifs, forming a visual flow around the frame (adapt to the city's geography if not river-adjacent).
+
+Landmarks of {{city_name}} are dotted with negative space + line art + localized color blocks: {{city_landmarks}}. Traditional and modern architecture blend naturally with layered depth and clear foreground/background separation.
+
+Style: minimal + premium + Eastern mood—not cluttered, not overly photorealistic.
+
+Color palette (key): saturated yet restrained—Chinese red, cyan-blue, and gilt gold as primaries, with warm gold highlights for strong impact without vulgarity.
+
+Background: large clean negative space or light rice-paper texture for breathability and premium feel; background texture: {{poster_texture_style}}.
+
+Details: auspicious clouds and water ripples with subtle emboss / gold-foil hot-stamp quality; micro light particles or flowing light streaks for a modern touch.
+
+Lighting: soft gradient light + local highlights for a majestic atmosphere.
+
+Overall: Guochao premium illustration / brand-poster quality / 8K / ultra-sharp detail.`
+};
+
+export const TEMPLATE_TEXTBOOK_POEM_PAGE = {
+  cn: `生成《{{classical_poem}}》的语文课本单页，风格参照中小学语文教材：含课题序号与篇名、作者及朝代、诗词全文、作者简介（小框）、与诗词意境相符的插图背景，以及「诗文解读」板块，须含写作背景、诗句理解（逐联或逐句）、主题思想等详细内容。版面整洁、层级分明、字体清晰可读，全文简体中文，不要乱码错字。`,
+  en: `Generate a single Chinese language textbook page for "{{classical_poem}}", in primary/middle-school textbook style: lesson number and title, author and dynasty, full poem text, author bio in a side box, mood-matching illustrated background, and a "诗文解读" section with writing background, line-by-line understanding, and central theme in detail. Clean hierarchy, legible typography, all text in Simplified Chinese.`
+};
+
+export const TEMPLATE_APP_ICONFONT = {
+  cn: `生成一套{{app_icon_category}}的 iconfont 图标集：极简线性图标，白底，双色（深灰/黑 + 一组强调色），统一线宽约 2px、圆角端点，网格整齐排列（如 3×7），每个图标下方配简体中文标签，顶部含标题与规格说明（如 24px、描边粗细）。图标语义需贴合该品类常见功能与场景。风格专业、扁平、矢量感。`,
+  en: `Generate a full iconfont set for {{app_icon_category}}: minimalist line icons, white background, two-tone (dark gray/black + one accent color), uniform ~2px stroke with rounded caps and joins, neat grid (e.g. 3×7), Chinese label under each icon, header with title and specs (e.g. 24px, stroke weight). Icons must match typical features and scenarios for this category. Professional flat vector UI style.`
+};
+
+export const TEMPLATE_COLLAB_POSTCARD = {
+  cn: `设计一张{{collab_theme_a}}与{{collab_theme_b}}联名的明信片：左右分栏（一侧主插画、一侧信笺与文字区），航空邮件风格斜纹边框、邮票与邮戳、双语标语与手写体名句，水彩手绘质感、可见纸纹，夜色与星光氛围，两侧 IP 与品牌元素自然融合、不违和，高级收藏感。`,
+  en: `Design a collaborative postcard for {{collab_theme_a}} × {{collab_theme_b}}: split layout (main illustration + correspondence area), airmail diagonal border, postage stamp and postmark, bilingual tagline and handwritten-style quote, soft watercolor hand-drawn look with paper grain, night sky and stars, seamless mashup of both worlds, premium collectible feel.`
+};
+
+export const TEMPLATE_GACHA_CARD_SET = {
+  cn: `为「{{card_game_collection}}」设计一套高阶手游抽卡/套卡展示图：新中式华贵风格，深色底、鎏金纹样与书法标题。须包含 SSR / SR / R 三档稀有度展示（小卡阵 + 色条区分），中心为重点卡大画幅立绘；含单卡卡面设计、人物简介、属性或战力数值、主动/被动/觉醒等技能图标与较详细中文说明、羁绊与阵容推荐示例。SSR 稀有卡边框与高光需有镭射/全息/粒子等高级质感。整体排版层级清晰，像真实游戏卡面设定页，简体中文为主。`,
+  en: `Design a premium mobile gacha card-set showcase for "{{card_game_collection}}": Neo-Chinese luxury UI, dark ground, gold filigree, calligraphy title. Include SSR / SR / R tiers (grid + color coding), large featured card in center; card art, character bio, stats, active/passive/ultimate skills with icons and detailed Chinese descriptions, synergy bonds and sample lineup. SSR cards need holographic foil, laser-rainbow border, or particle effects. Clear information hierarchy like an in-game card spec sheet, Simplified Chinese for text.`
+};
+
+export const TEMPLATE_ANCIENT_CELEBRITY_BUSINESS_CARD = {
+  cn: `为{{ancient_celebrity}}设计一个古代的名片，正反面都需要展示，展现中式东方美学`,
+  en: `Design an ancient name card for {{ancient_celebrity}}, showing both front and back, with Chinese Oriental aesthetics.`
 };
 
 export const DEFAULT_TEMPLATE_CONTENT = {
@@ -3316,6 +3419,259 @@ export const INITIAL_TEMPLATES_CONFIG = [
     tags: ["创意","卡通"],
     language: ["cn","en"],
     bestModel: "Nano Banana Pro",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_3d_furniture_pixar",
+    name: { cn: "皮克斯风格3D家具", en: "Pixar-style 3D Furniture" },
+    content: TEMPLATE_3D_FURNITURE_PIXAR,
+    imageUrl: "https://s3.bmp.ovh/2026/03/29/6iocHrUY.jpg",
+    author: "@tanshilong",
+    selections: {
+      background_color_clean: {
+        cn: "纯白",
+        en: "Pure White"
+      },
+      render_style: {
+        cn: "Pixar 卡通渲染",
+        en: "Pixar Cartoon Rendering"
+      },
+      interior_design_style: {
+        cn: "欧式古典风格",
+        en: "European Classical Style"
+      },
+      furniture_set: {
+        cn: "沙发、地毯、茶几、电视",
+        en: "Sofa, rug, coffee table, TV"
+      }
+    },
+    tags: ["创意","产品"],
+    language: ["cn","en"],
+    bestModel: "Nano Banana Pro",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_creative_container",
+    name: {
+      cn: "创意容器·微观世界",
+      en: "Creative Container · Miniature World"
+    },
+    content: TEMPLATE_CREATIVE_CONTAINER,
+    imageUrl: "https://s3.bmp.ovh/2026/04/07/YhFhh6t3.jpg",
+    author: "@tanshilong",
+    selections: {
+      landscape_location: {
+        cn: "特兰西瓦尼亚葡萄园",
+        en: "Transylvania vineyard"
+      },
+      lighting_time: {
+        cn: "清晨阳光",
+        en: "morning sunlight"
+      }
+    },
+    tags: ["产品", "摄影", "创意", "容器"],
+    language: ["cn", "en"],
+    bestModel: "Nano Banana Pro",
+    baseImage: "recommend_base_image"
+  },
+  {
+    id: "tpl_museum_infographic",
+    name: {
+      cn: "博物馆图鉴式信息图",
+      en: "Museum Infographic"
+    },
+    content: TEMPLATE_MUSEUM_INFOGRAPHIC,
+    imageUrl: "https://s3.bmp.ovh/2026/04/18/vBKchUMk.jpg",
+    author: "@MrLarus（Larus Canus）",
+    selections: {
+      museum_theme: {
+        cn: "明制汉服",
+        en: "Ming Dynasty Hanfu"
+      }
+    },
+    tags: ["图表", "人物", "创意"],
+    language: "cn",
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_nine_grid_designers",
+    name: {
+      cn: "九宫格设计师图鉴",
+      en: "Nine Designers Grid"
+    },
+    content: TEMPLATE_NINE_GRID_DESIGNERS,
+    imageUrl: "https://s3.bmp.ovh/2026/04/18/NHJv6A14.png",
+    author: "@tanshilong",
+    selections: {
+      design_item: {
+        cn: "机械键盘",
+        en: "Mechanical keyboard"
+      }
+    },
+    tags: ["图表", "产品", "创意"],
+    language: "cn",
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_four_panel_ads",
+    name: {
+      cn: "四联虚构商业广告",
+      en: "Four-Panel Fictional Ads"
+    },
+    content: TEMPLATE_FOUR_PANEL_ADS,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/fTR7DPMq.jpg",
+    imageUrls: [
+      "https://s3.bmp.ovh/2026/04/19/fTR7DPMq.jpg",
+      "https://s3.bmp.ovh/2026/04/19/UL36qLoz.png"
+    ],
+    author: "@midori_tatsuta",
+    selections: {
+      ad_regional_style: {
+        cn: "中式广告",
+        en: "Chinese advertisements"
+      }
+    },
+    tags: ["创意", "产品", "摄影"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_guochao_city_poster",
+    name: {
+      cn: "新中式国潮城市海报",
+      en: "Neo-Chinese City Poster"
+    },
+    content: TEMPLATE_GUOCHAO_CITY_POSTER,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/SVh3Q8G6.jpg",
+    author: "@liyue_ai",
+    selections: {
+      city_name: {
+        cn: "广州",
+        en: "Guangzhou"
+      },
+      city_landmarks: {
+        cn: "珠江新城双塔、猎德大桥、白云山轮廓、岭南骑楼",
+        en: "Zhujiang New Town twin towers, Liede Bridge, Baiyun Mountain silhouette, Lingnan arcade buildings"
+      },
+      poster_texture_style: {
+        cn: "大面积留白 + 淡宣纸肌理",
+        en: "Generous negative space with light rice-paper grain"
+      }
+    },
+    tags: ["创意", "建筑", "摄影"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_textbook_poem_page",
+    name: {
+      cn: "语文课本·经典诗词页",
+      en: "Textbook · Classical Poem Page"
+    },
+    content: TEMPLATE_TEXTBOOK_POEM_PAGE,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/3tYkO4th.jpg",
+    author: "@tanshilong",
+    selections: {
+      classical_poem: {
+        cn: "春夜喜雨",
+        en: "A Welcome Rain on a Spring Night"
+      }
+    },
+    tags: ["创意", "图表", "摄影"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_app_iconfont",
+    name: {
+      cn: "APP Iconfont 图标集",
+      en: "App Iconfont Set"
+    },
+    content: TEMPLATE_APP_ICONFONT,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/WLASD2yD.jpg",
+    author: "@akokoi1",
+    selections: {
+      app_icon_category: {
+        cn: "运动类APP",
+        en: "Sports app"
+      }
+    },
+    tags: ["创意", "产品", "图表"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_collab_postcard",
+    name: {
+      cn: "双 IP 联名明信片",
+      en: "Dual-IP Collab Postcard"
+    },
+    content: TEMPLATE_COLLAB_POSTCARD,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/GtauyAVI.jpg",
+    author: "@akokoi1",
+    selections: {
+      collab_theme_a: {
+        cn: "小王子",
+        en: "The Little Prince"
+      },
+      collab_theme_b: {
+        cn: "SpaceX",
+        en: "SpaceX"
+      }
+    },
+    tags: ["创意", "卡通", "摄影"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_gacha_card_set",
+    name: {
+      cn: "国风抽卡套卡设定",
+      en: "Neo-Chinese Gacha Card Set"
+    },
+    content: TEMPLATE_GACHA_CARD_SET,
+    imageUrl: "https://s3.bmp.ovh/2026/04/19/jZAGAbk8.jpg",
+    author: "@tanshilong",
+    selections: {
+      card_game_collection: {
+        cn: "中国古代诗人",
+        en: "Ancient Chinese poets"
+      }
+    },
+    tags: ["创意", "游戏", "卡通"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
+    baseImage: "no_base_image"
+  },
+  {
+    id: "tpl_ancient_celebrity_business_card",
+    name: {
+      cn: "古代名士名片",
+      en: "Ancient Scholar Name Card"
+    },
+    content: TEMPLATE_ANCIENT_CELEBRITY_BUSINESS_CARD,
+    imageUrl: "https://s3.bmp.ovh/2026/04/21/IkMDFWPz.png",
+    imageUrls: [
+      "https://s3.bmp.ovh/2026/04/21/IkMDFWPz.png",
+      "https://s3.bmp.ovh/2026/04/21/mb59sHFP.jpg"
+    ],
+    author: "@tanshilong",
+    selections: {
+      ancient_celebrity: {
+        cn: "苏轼",
+        en: "Su Shi"
+      }
+    },
+    tags: ["创意", "人物", "摄影"],
+    language: ["cn", "en"],
+    bestModel: "GPT-image-2",
     baseImage: "no_base_image"
   }
 ];

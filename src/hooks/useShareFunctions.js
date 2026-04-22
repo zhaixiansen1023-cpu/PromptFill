@@ -8,10 +8,12 @@ const API_BASE_URL =
   'https://data.tanshilong.com/api/share';
 
 const isTauriEnv = () => !!(window.__TAURI_INTERNALS__ || window.__TAURI_IPC__ || window.location.protocol === 'tauri:');
+const isIOSDevice = () => /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const fetchJson = async (url, options = {}) => {
   const method = options.method || 'GET';
-  if (isTauriEnv()) {
+  // Tauri 非 iOS 端使用插件 fetch；iOS 端因 plugin-http ≥2.5.0 body 读取 Bug 改用原生 fetch
+  if (isTauriEnv() && !isIOSDevice()) {
     try {
       const { fetch } = await import('@tauri-apps/plugin-http');
       const res = await fetch(url, { ...options, method });

@@ -3,8 +3,59 @@ import { Variable } from './Variable';
 import { VisualEditor } from './VisualEditor';
 import { EditorToolbar } from './EditorToolbar';
 import { ImageIcon, ArrowUpRight, Upload, Globe, RotateCcw, Pencil, Check, X, ChevronLeft, ChevronRight, Plus, Trash2, Play, Link } from 'lucide-react';
+import { PremiumButton } from './PremiumButton';
 import { WaypointsIcon } from './icons/WaypointsIcon';
 import { getLocalized, getVideoEmbedInfo } from '../utils/helpers';
+import { OptimizedImage } from './OptimizedImage';
+import { useResolvedFolderMediaSrc } from '../context/FolderStorageContext';
+import { isFolderMediaPath } from '../utils/folderImages';
+
+/** 本地文件夹下 images/ 路径的视频 + poster */
+function PreviewInlineVideo({ videoSrc, posterSrc, videoKey, isDarkMode, onLoaded, onClick, language }) {
+  const { displaySrc: vSrc, failed: vFail } = useResolvedFolderMediaSrc(videoSrc || '');
+  const { displaySrc: pSrc } = useResolvedFolderMediaSrc(posterSrc || '');
+  if (vFail || !vSrc) {
+    return (
+      <div className={`w-full min-h-[200px] flex items-center justify-center rounded-md text-xs ${isDarkMode ? 'bg-black/40 text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+        {language === 'cn' ? '视频不可用' : 'Video unavailable'}
+      </div>
+    );
+  }
+  return (
+    <video
+      key={videoKey}
+      src={vSrc}
+      poster={pSrc || undefined}
+      controls
+      playsInline
+      className="w-full h-auto block rounded-md"
+      onClick={onClick}
+      onLoadedData={onLoaded}
+      onCanPlay={onLoaded}
+    />
+  );
+}
+
+function SourceThumbVideo({ src, className, onMouseEnter, onMouseLeave }) {
+  const { displaySrc, failed } = useResolvedFolderMediaSrc(src || '');
+  if (failed || !displaySrc) {
+    return (
+      <div className={`${className} bg-black/20 flex items-center justify-center`}>
+        <Play size={24} className="text-white/60" fill="currentColor" />
+      </div>
+    );
+  }
+  return (
+    <video
+      src={displaySrc}
+      className={className}
+      muted
+      playsInline
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    />
+  );
+}
 
 /**
  * TemplatePreview 组件 - 负责渲染模版的预览内容，包括变量交互
@@ -69,10 +120,12 @@ export const TemplatePreview = React.memo(({
   updateActiveTemplateContent,
   textareaRef,
   templateLanguage,
-  handleShareLink, // 新增：分享处理函数
-  // AI 相关（预留接口）
-  onGenerateAITerms = null,  // AI 生成词条的回调函数
-  updateTemplateProperty, // 新增：立即更新属性的函数
+  handleShareLink,
+  // AI 相关
+  onGenerateAITerms = null,
+  onSmartSplitClick = null,
+  isSmartSplitLoading = false,
+  updateTemplateProperty,
 }) => {
   const [activeSelect, setActiveSelect] = React.useState(null); // 'bestModel' | 'baseImage' | null
   const selectRef = useRef(null);
@@ -96,7 +149,11 @@ export const TemplatePreview = React.memo(({
   // 颜色映射配置 - 参考词库 (CATEGORY_STYLES) 的专业配色，弃用灰色系
   const MODEL_COLORS = {
     'Nano Banana Pro': 'text-blue-600/90 dark:text-blue-400/90',
+    'Nano Banana 2': 'text-blue-500/90 dark:text-blue-300/90',
     'Midjourney V7': 'text-violet-600/90 dark:text-violet-400/90',
+    'Midjourney niji 7': 'text-fuchsia-600/90 dark:text-fuchsia-400/90',
+    'Midjourney v8.1': 'text-purple-600/90 dark:text-purple-400/90',
+    'GPT-image-2': 'text-green-600/90 dark:text-green-400/90',
     'Zimage': 'text-emerald-600/90 dark:text-emerald-400/90',
     'Seedance 2.0': 'text-orange-600/90 dark:text-orange-400/90',
     'Veo 3.1': 'text-rose-600/90 dark:text-rose-400/90',
@@ -358,15 +415,34 @@ export const TemplatePreview = React.memo(({
                 id="preview-card"
                 className={`${isVideo && !isEditing ? 'max-w-none w-full' : 'max-w-4xl'} mx-auto p-4 sm:p-6 md:p-8 lg:p-12 min-h-[500px] md:min-h-[600px] transition-all duration-500 relative ${isMobile ? (isDarkMode ? 'bg-[#242120]/90 border border-white/5 rounded-2xl shadow-2xl overflow-visible' : 'bg-white/90 border border-white/60 rounded-2xl shadow-xl overflow-visible') : (isDarkMode ? 'bg-black/20 backdrop-blur-md rounded-2xl border border-white/5 shadow-2xl' : 'bg-white/40 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm')}`}
             >
-                {/* 移动端模版内语言切换 - 单独一行 */}
-                {isMobile && showLanguageToggle && (
-                  <div className={`flex items-center justify-center py-1 mb-3 border-b ${isDarkMode ? 'border-white/5' : 'border-gray-200/60'}`}>
-                    <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} shrink-0 scale-75`}>
-                      <button onClick={() => supportsChinese && setLanguage('cn')}
-                        className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${language === 'cn' ? 'is-active' : ''} !px-2`}>CN</button>
-                      <button onClick={() => supportsEnglish && setLanguage('en')}
-                        className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${language === 'en' ? 'is-active' : ''} !px-2`}>EN</button>
+                {/* 移动端模版内工具栏：语言切换（左） + 智能拆分（右） */}
+                {isMobile && (showLanguageToggle || onSmartSplitClick) && (
+                  <div className={`flex items-center justify-between py-1 mb-3 border-b ${isDarkMode ? 'border-white/5' : 'border-gray-200/60'}`}>
+                    <div className="flex items-center">
+                      {showLanguageToggle && (
+                        <div className={`premium-toggle-container ${isDarkMode ? 'dark' : 'light'} shrink-0 scale-[0.85] origin-left`}>
+                          <button onClick={() => supportsChinese && setLanguage('cn')}
+                            className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${language === 'cn' ? 'is-active' : ''} !px-2`}>CN</button>
+                          <button onClick={() => supportsEnglish && setLanguage('en')}
+                            className={`premium-toggle-item ${isDarkMode ? 'dark' : 'light'} ${language === 'en' ? 'is-active' : ''} !px-2`}>EN</button>
+                        </div>
+                      )}
                     </div>
+                    {onSmartSplitClick && (
+                      <PremiumButton
+                        onClick={onSmartSplitClick}
+                        disabled={isSmartSplitLoading}
+                        isDarkMode={isDarkMode}
+                        className={`rainbow ${isSmartSplitLoading ? 'opacity-80' : ''}`}
+                        title={language === 'cn' ? '智能拆分' : 'Smart Split'}
+                      >
+                        <span className={`flex items-center gap-1 ${isSmartSplitLoading ? 'animate-pulse' : ''}`}>
+                          {isSmartSplitLoading
+                            ? (language === 'cn' ? '拆分中...' : 'Splitting...')
+                            : (language === 'cn' ? '智能拆分' : 'Split')}
+                        </span>
+                      </PremiumButton>
+                    )}
                   </div>
                 )}
 
@@ -466,10 +542,12 @@ export const TemplatePreview = React.memo(({
                                           <Play size={24} className="text-white/60" fill="currentColor" />
                                         </div>
                                       ) : (
-                                        <img 
-                                          src={src.url} 
+                                        <OptimizedImage
+                                          src={src.url}
                                           alt={getLocalized(src.label, language) || `Source ${sIdx + 1}`}
                                           className="w-full h-full object-cover"
+                                          isDarkMode={isDarkMode}
+                                          priority={10}
                                         />
                                       )}
                                     </div>
@@ -602,7 +680,7 @@ export const TemplatePreview = React.memo(({
                               className={`absolute top-full left-0 right-0 mt-2 z-[100] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border ${isDarkMode ? 'bg-[#2A2928] border-white/10' : 'bg-white border-gray-100'}`}
                               style={{ backdropFilter: 'blur(20px)' }}
                             >
-                              {['Nano Banana Pro', 'Midjourney V7', 'Zimage', 'Seedance 2.0', 'Veo 3.1', 'Kling 3.0'].map((opt) => (
+                              {['Nano Banana Pro', 'Nano Banana 2', 'Midjourney V7', 'Midjourney niji 7', 'Midjourney v8.1', 'GPT-image-2', 'Zimage', 'Seedance 2.0', 'Veo 3.1', 'Kling 3.0'].map((opt) => (
                                 <button
                                   key={opt}
                                   onClick={() => {
@@ -783,14 +861,12 @@ export const TemplatePreview = React.memo(({
                                         >
                                             <div className="w-28 h-28 md:w-36 md:h-36 overflow-hidden flex items-center justify-center cursor-zoom-in">
                                                 {src.type === 'video' ? (
-                                                    getVideoEmbedInfo(src.url)?.platform === 'video' ? (
-                                                        <video 
-                                                            src={src.url} 
-                                                            className="w-full h-full object-cover" 
-                                                            muted 
-                                                            playsInline
-                                                            onMouseEnter={e => e.target.play()}
-                                                            onMouseLeave={e => {
+                                                    getVideoEmbedInfo(src.url)?.platform === 'video' || isFolderMediaPath(src.url) ? (
+                                                        <SourceThumbVideo
+                                                            src={src.url}
+                                                            className="w-full h-full object-cover"
+                                                            onMouseEnter={(e) => e.target.play()}
+                                                            onMouseLeave={(e) => {
                                                                 e.target.pause();
                                                                 e.target.currentTime = 0;
                                                             }}
@@ -801,10 +877,12 @@ export const TemplatePreview = React.memo(({
                                                         </div>
                                                     )
                                                 ) : (
-                                                    <img 
-                                                        src={src.url} 
+                                                    <OptimizedImage
+                                                        src={src.url}
                                                         alt={getLocalized(src.label, language) || `Source ${sIdx + 1}`}
                                                         className="w-full h-full object-cover"
+                                                        isDarkMode={isDarkMode}
+                                                        priority={10}
                                                     />
                                                 )}
                                             </div>
@@ -918,34 +996,25 @@ export const TemplatePreview = React.memo(({
                                             />
                                         </div>
                                     ) : (
-                                        <video 
-                                            key={activeTemplate.id + '_video_edit'}
-                                            src={activeTemplate.videoUrl}
-                                            poster={currentImageUrl}
-                                            controls
-                                            playsInline
-                                            className="w-full h-auto block rounded-md"
+                                        <PreviewInlineVideo
+                                            videoKey={activeTemplate.id + '_video_edit'}
+                                            videoSrc={activeTemplate.videoUrl}
+                                            posterSrc={currentImageUrl}
+                                            isDarkMode={isDarkMode}
+                                            language={language}
+                                            onLoaded={() => setVideoLoading(false)}
                                             onClick={(e) => e.stopPropagation()}
-                                            onLoadedData={() => setVideoLoading(false)}
-                                            onCanPlay={() => setVideoLoading(false)}
                                         />
                                     )
                                 ) : currentImageUrl ? (
-                                    <img 
+                                    <OptimizedImage
                                         key={currentImageUrl}
-                                        src={currentImageUrl} 
+                                        src={currentImageUrl}
                                         referrerPolicy="no-referrer"
-                                        alt={getLocalized(activeTemplate.name, language) || "Template Preview"} 
-                                        className="w-full md:w-auto md:max-w-[400px] md:max-h-[400px] h-auto object-contain block animate-in fade-in duration-300" 
-                                        onError={(e) => {
-                                            e.target.style.display = 'none';
-                                            e.target.parentElement.style.backgroundColor = isDarkMode ? '#1a1a1a' : '#f1f5f9';
-                                            const span = document.createElement('span');
-                                            span.innerText = 'Image Failed';
-                                            span.style.color = isDarkMode ? '#333' : '#cbd5e1';
-                                            span.style.fontSize = '12px';
-                                            e.target.parentElement.appendChild(span);
-                                        }}
+                                        alt={getLocalized(activeTemplate.name, language) || 'Template Preview'}
+                                        className="w-full md:w-auto md:max-w-[400px] md:max-h-[400px] h-auto object-contain block animate-in fade-in duration-300"
+                                        isDarkMode={isDarkMode}
+                                        priority={0}
                                     />
                                 ) : (
                                     <div 
@@ -1105,14 +1174,12 @@ export const TemplatePreview = React.memo(({
                                                 >
                                                     <div className="w-24 h-24 md:w-28 md:h-28 overflow-hidden flex items-center justify-center cursor-zoom-in">
                                                         {src.type === 'video' ? (
-                                                            getVideoEmbedInfo(src.url)?.platform === 'video' ? (
-                                                                <video 
-                                                                    src={src.url} 
-                                                                    className="w-full h-full object-cover" 
-                                                                    muted 
-                                                                    playsInline
-                                                                    onMouseEnter={e => e.target.play()}
-                                                                    onMouseLeave={e => {
+                                                            getVideoEmbedInfo(src.url)?.platform === 'video' || isFolderMediaPath(src.url) ? (
+                                                                <SourceThumbVideo
+                                                                    src={src.url}
+                                                                    className="w-full h-full object-cover"
+                                                                    onMouseEnter={(e) => e.target.play()}
+                                                                    onMouseLeave={(e) => {
                                                                         e.target.pause();
                                                                         e.target.currentTime = 0;
                                                                     }}
@@ -1123,10 +1190,12 @@ export const TemplatePreview = React.memo(({
                                                                 </div>
                                                             )
                                                         ) : (
-                                                            <img 
-                                                                src={src.url} 
+                                                            <OptimizedImage
+                                                                src={src.url}
                                                                 alt={getLocalized(src.label, language) || `Source ${sIdx + 1}`}
                                                                 className="w-full h-full object-cover"
+                                                                isDarkMode={isDarkMode}
+                                                                priority={10}
                                                             />
                                                         )}
                                                     </div>

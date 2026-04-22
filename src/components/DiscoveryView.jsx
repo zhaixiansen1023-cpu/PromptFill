@@ -10,6 +10,7 @@ import { TagSidebar } from './TagSidebar';
 import { TemplateCarousel } from './TemplateCarousel';
 import { MobileVideoFirstFrame } from './mobile';
 import { OptimizedImage } from './OptimizedImage';
+import { useResolvedFolderMediaSrc } from '../context/FolderStorageContext';
 import { TAG_LABELS } from '../constants/styles';
 import { openExternalLink } from '../utils/platform';
 
@@ -25,6 +26,8 @@ import { openExternalLink } from '../utils/platform';
 const VideoCard = React.memo(({ videoUrl, imageUrl, alt }) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
+  const { displaySrc: resolvedVideo, failed: videoBroken } = useResolvedFolderMediaSrc(videoUrl || '');
+  const videoPlaySrc = videoBroken ? '' : resolvedVideo;
 
   const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
@@ -63,7 +66,7 @@ const VideoCard = React.memo(({ videoUrl, imageUrl, alt }) => {
       {/* 视频层 - 始终存在，hover 时显示 */}
       <video
         ref={videoRef}
-        src={videoUrl}
+        src={videoPlaySrc || ''}
         className={`w-full h-auto object-cover ${imageUrl ? 'absolute inset-0 w-full h-full' : ''} transition-opacity duration-300 ${imageUrl && !isHovered ? 'opacity-0' : 'opacity-100'}`}
         muted
         playsInline
@@ -121,7 +124,7 @@ export const DiscoveryView = React.memo(({
   }) => {
     const isEmbedded = window.self !== window.top;
     const [columnCount, setColumnCount] = useState(1);
-    const [columnGap, setColumnGap] = useState(20); // Default to gap-5 (20px)
+    const [columnGap, setColumnGap] = useState(4);
     const [isMobileTagsExpanded, setIsMobileTagsExpanded] = useState(false); // 手机端顶栏标签行默认折叠
   
     useEffect(() => {
@@ -132,19 +135,19 @@ export const DiscoveryView = React.memo(({
         if (masonryStyleKey === 'poster') {
           // 视频类型下桌面端改为 2 列，避免横屏视频太小
           const count = width >= 1280 ? (isVideoType ? 2 : 3) : (width >= 640 ? 2 : 1);
-          return { count, gap: 12 };
+          return { count, gap: 4 };
         } else if (masonryStyleKey === 'classic' || masonryStyleKey === 'minimal') {
           // 视频类型下桌面端也限制在 2 列
           const count = width >= 1280 ? (isVideoType ? 2 : 4) : (width >= 1024 ? (isVideoType ? 2 : 3) : (width >= 640 ? 2 : 1));
-          return { count, gap: 16 };
+          return { count, gap: 4 };
         } else if (masonryStyleKey === 'compact') {
           // 视频类型下桌面端也限制在 2 列
           const count = width >= 1280 ? (isVideoType ? 2 : 5) : (width >= 1024 ? (isVideoType ? 2 : 4) : (width >= 640 ? (isVideoType ? 2 : 3) : 2));
-          return { count, gap: 8 };
+          return { count, gap: 4 };
         } else if (masonryStyleKey === 'list') {
-          return { count: 1, gap: 12 };
+          return { count: 1, gap: 4 };
         }
-        return { count: 1, gap: 12 };
+        return { count: 1, gap: 4 };
       };
   
       const handleResize = () => {
@@ -279,9 +282,10 @@ export const DiscoveryView = React.memo(({
                     setDiscoveryView(false);
                   }
                 }}
-                className={`break-inside-avoid mb-1 w-full rounded-lg overflow-hidden shadow-sm border active:scale-[0.98] transition-all ${isDarkMode ? 'bg-[#2A2726] border-white/5' : 'bg-white border-gray-100'}`}
+                className={`break-inside-avoid mb-[4px] w-full rounded-lg overflow-hidden shadow-sm border active:scale-[0.98] transition-all ${isDarkMode ? 'bg-[#2A2726] border-white/5' : 'bg-white border-gray-100'}`}
               >
-                <div className="relative w-full bg-gray-50/5">
+                {/* min-h-px：避免 img 未解码前高度为 0 时与懒加载/Intersection 叠加导致永不拉取 */}
+                <div className="relative w-full min-h-px bg-gray-50/5">
                   {t_item.imageUrl ? (
                     <OptimizedImage
                       src={t_item.imageUrl}
@@ -417,9 +421,9 @@ export const DiscoveryView = React.memo(({
                                                       setDiscoveryView(false);
                                                   }
                                               }}
-                                              className={`cursor-pointer group transition-shadow duration-300 relative overflow-hidden rounded-xl isolate border-2 hover:shadow-[0_0_15px_rgba(251,146,60,0.35)] will-change-transform ${isDarkMode ? 'border-white/10' : 'border-white'}`}
+                                              className={`cursor-pointer group transition-shadow duration-300 relative overflow-hidden rounded-xl isolate hover:shadow-[0_0_15px_rgba(251,146,60,0.35)] will-change-transform`}
                                           >
-                                              <div className={`relative w-full overflow-hidden rounded-lg ${isDarkMode ? 'bg-[#2A2726]' : 'bg-gray-100'}`} style={{ transform: 'translateZ(0)' }}>
+                                              <div className={`relative w-full min-h-px overflow-hidden rounded-lg ${isDarkMode ? 'bg-[#2A2726]' : 'bg-gray-100'}`} style={{ transform: 'translateZ(0)' }}>
                                                   {t_item.type === 'video' && t_item.videoUrl ? (
                                                       <VideoCard
                                                           videoUrl={t_item.videoUrl}

@@ -670,7 +670,6 @@ export const VisualEditor = React.forwardRef(({
         <div className="flex-1 px-6 pb-20">
           <ContentEditableEditor
             ref={ref} {...editorProps}
-            disableSlashTrigger
             className={editorBaseClass}
             style={{ ...editorStyle, minHeight: '200px' }}
           />
